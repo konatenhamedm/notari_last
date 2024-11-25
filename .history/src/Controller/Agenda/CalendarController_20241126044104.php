@@ -187,7 +187,7 @@ class CalendarController extends BaseController
           
             $response = [];
             $redirect = $this->generateUrl('app_config_parametre_agenda_index');
-            //$email = "";
+            $email = "";
             // if ($form->getData()->getClient()->getRaisonSocial() == "") {
             //     $email = $form->getData()->getClient()->getEmail();
             // } else {

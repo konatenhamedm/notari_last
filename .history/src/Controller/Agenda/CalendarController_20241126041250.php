@@ -168,93 +168,92 @@ class CalendarController extends BaseController
         ]);
     }
 
-    #[Route('/new/new', name: 'app_agenda_calendar_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, FormError $formError): Response
-    {
-        $calendar = new Calendar();
-        $form = $this->createForm(CalendarType::class, $calendar, [
-            'method' => 'POST',
-            'action' => $this->generateUrl('app_agenda_calendar_new')
-        ]);
-        $form->handleRequest($request);
+//     #[Route('/new/new', name: 'app_agenda_calendar_new', methods: ['GET', 'POST'])]
+//     public function new(Request $request, EntityManagerInterface $entityManager, FormError $formError): Response
+//     {
+//         $calendar = new Calendar();
+//         $form = $this->createForm(CalendarType::class, $calendar, [
+//             'method' => 'POST',
+//             'action' => $this->generateUrl('app_agenda_calendar_new')
+//         ]);
+//         $form->handleRequest($request);
 
-        $data = null;
-        $statutCode = Response::HTTP_OK;
+//         $data = null;
+//         $statutCode = Response::HTTP_OK;
 
-        $isAjax = $request->isXmlHttpRequest();
-        // dd($form->getData());
-        if ($form->isSubmitted()) {
-          
-            $response = [];
-            $redirect = $this->generateUrl('app_config_parametre_agenda_index');
-            //$email = "";
-            // if ($form->getData()->getClient()->getRaisonSocial() == "") {
-            //     $email = $form->getData()->getClient()->getEmail();
-            // } else {
+//         $isAjax = $request->isXmlHttpRequest();
 
-            //     $email = $form->getData()->getClient()->getEmailEntreprise();
-            // }
+//         if ($form->isSubmitted()) {
+//             $response = [];
+//             $redirect = $this->generateUrl('app_config_parametre_agenda_index');
+//             // $email = "";
+//             // if ($form->getData()->getClient()->getRaisonSocial() == "") {
+//             //     $email = $form->getData()->getClient()->getEmail();
+//             // } else {
 
-            // $identite = "";
-            // //dd($form->getData()->getClient());
-            // if ($form->getData()->getClient()->getRaisonSocial() == "") {
-            //     $identite = $form->getData()->getClient()->getNom() . " " . $form->getData()->getClient()->getPrenom();
-            // } else {
+//             //     $email = $form->getData()->getClient()->getEmailEntreprise();
+//             // }
 
-            //     $identite = $form->getData()->getClient()->getRaisonSocial();
-            // }
+//             // $identite = "";
+//             // //dd($form->getData()->getClient());
+//             // if ($form->getData()->getClient()->getRaisonSocial() == "") {
+//             //     $identite = $form->getData()->getClient()->getNom() . " " . $form->getData()->getClient()->getPrenom();
+//             // } else {
 
-            //$objet = $form->getData()->getDescription();
-            if ($form->isValid()) {
-                /*     $mailerService->send(
-                    'INFORMATION CONCERNANT LE RENDEZ-VOUS',
-                    'konatenvaly@gmail.com',
-                    $email,
-                    "_admin/contact/template.html.twig",
-                    [
-                        'message' =>  $objet,
-                        'entreprise' =>  "Notari",
-                        'identite' =>  $identite,
-                        'telephone' =>  '0704314164'
-                    ]
-                );*/
-                $calendar->setActive(1)
-                    ->setAllDay(false)
-                    ->setBackgroundColor("#31F74F")
-                    ->setBorderColor("#BBF0DA")
-                    ->setTextColor("#FFF");
-                $calendar->setEntreprise($this->entreprise);
-                $entityManager->persist($calendar);
-                $entityManager->flush();
-// 
-                $data = true;
-                $message = 'Opération effectuée avec succès';
-                $statut = 1;
-                $this->addFlash('success', $message);
-            } else {
-                $message = $formError->all($form);
-                $statut = 0;
-                $statutCode = 500;
-                if (!$isAjax) {
-                    $this->addFlash('warning', $message);
-                }
-            }
+//             //     $identite = $form->getData()->getClient()->getRaisonSocial();
+//             // }
+
+//             //$objet = $form->getData()->getDescription();
+//             if ($form->isValid()) {
+//                 /*     $mailerService->send(
+//                     'INFORMATION CONCERNANT LE RENDEZ-VOUS',
+//                     'konatenvaly@gmail.com',
+//                     $email,
+//                     "_admin/contact/template.html.twig",
+//                     [
+//                         'message' =>  $objet,
+//                         'entreprise' =>  "Notari",
+//                         'identite' =>  $identite,
+//                         'telephone' =>  '0704314164'
+//                     ]
+//                 );*/
+//                 $calendar->setActive(1)
+//                     ->setAllDay(false)
+//                     ->setBackgroundColor("#31F74F")
+//                     ->setBorderColor("#BBF0DA")
+//                     ->setTextColor("#FFF");
+//                 $calendar->setEntreprise($this->entreprise);
+//                 $entityManager->persist($calendar);
+//                 $entityManager->flush();
+// // 
+//                 $data = true;
+//                 $message = 'Opération effectuée avec succès';
+//                 $statut = 1;
+//                 $this->addFlash('success', $message);
+//             } else {
+//                 $message = $formError->all($form);
+//                 $statut = 0;
+//                 $statutCode = 500;
+//                 if (!$isAjax) {
+//                     $this->addFlash('warning', $message);
+//                 }
+//             }
 
 
-            if ($isAjax) {
-                return $this->json(compact('statut', 'message', 'redirect', 'data'), $statutCode);
-            } else {
-                if ($statut == 1) {
-                    return $this->redirect($redirect, Response::HTTP_OK);
-                }
-            }
-        }
+//             if ($isAjax) {
+//                 return $this->json(compact('statut', 'message', 'redirect', 'data'), $statutCode);
+//             } else {
+//                 if ($statut == 1) {
+//                     return $this->redirect($redirect, Response::HTTP_OK);
+//                 }
+//             }
+//         }
 
-        return $this->renderForm('agenda/calendar/new.html.twig', [
-            'calendar' => $calendar,
-            'form' => $form,
-        ]);
-    }
+//         return $this->renderForm('agenda/calendar/new.html.twig', [
+//             'calendar' => $calendar,
+//             'form' => $form,
+//         ]);
+//     }
 
     #[Route('/{id}/show', name: 'app_agenda_calendar_show', methods: ['GET'])]
     public function show(Calendar $calendar): Response

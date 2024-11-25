@@ -182,27 +182,27 @@ class CalendarController extends BaseController
         $statutCode = Response::HTTP_OK;
 
         $isAjax = $request->isXmlHttpRequest();
-        // dd($form->getData());
+
         if ($form->isSubmitted()) {
-          
+            dd($form->getData());
             $response = [];
             $redirect = $this->generateUrl('app_config_parametre_agenda_index');
-            //$email = "";
-            // if ($form->getData()->getClient()->getRaisonSocial() == "") {
-            //     $email = $form->getData()->getClient()->getEmail();
-            // } else {
+            $email = "";
+            if ($form->getData()->getClient()->getRaisonSocial() == "") {
+                $email = $form->getData()->getClient()->getEmail();
+            } else {
 
-            //     $email = $form->getData()->getClient()->getEmailEntreprise();
-            // }
+                $email = $form->getData()->getClient()->getEmailEntreprise();
+            }
 
-            // $identite = "";
-            // //dd($form->getData()->getClient());
-            // if ($form->getData()->getClient()->getRaisonSocial() == "") {
-            //     $identite = $form->getData()->getClient()->getNom() . " " . $form->getData()->getClient()->getPrenom();
-            // } else {
+            $identite = "";
+            //dd($form->getData()->getClient());
+            if ($form->getData()->getClient()->getRaisonSocial() == "") {
+                $identite = $form->getData()->getClient()->getNom() . " " . $form->getData()->getClient()->getPrenom();
+            } else {
 
-            //     $identite = $form->getData()->getClient()->getRaisonSocial();
-            // }
+                $identite = $form->getData()->getClient()->getRaisonSocial();
+            }
 
             //$objet = $form->getData()->getDescription();
             if ($form->isValid()) {

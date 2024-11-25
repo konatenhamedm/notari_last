@@ -182,12 +182,11 @@ class CalendarController extends BaseController
         $statutCode = Response::HTTP_OK;
 
         $isAjax = $request->isXmlHttpRequest();
-        // dd($form->getData());
+
         if ($form->isSubmitted()) {
-          
             $response = [];
             $redirect = $this->generateUrl('app_config_parametre_agenda_index');
-            //$email = "";
+            // $email = "";
             // if ($form->getData()->getClient()->getRaisonSocial() == "") {
             //     $email = $form->getData()->getClient()->getEmail();
             // } else {

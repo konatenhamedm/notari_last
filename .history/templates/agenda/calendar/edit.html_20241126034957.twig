@@ -1,7 +1,7 @@
 {% block page_content %}
     {% form_theme form 'widget/fields-block.html.twig' %}
     <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Création d'une activité</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Edition de l'activité</h5>
         <div class="btn btn-icon btn-sm  ms-2" data-bs-dismiss="modal" aria-label="Close">
             <span class="svg-icon svg-icon-2x text-white">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -22,7 +22,7 @@
                     {# <input type="text" id="userinput1" class="form-control border-primary" placeholder="Compte contribuable" name="name">#}
                 </div>
                 <div class="form-group col-md-6">
-                    <label class="sr-onl" for="userinput1">Dossier concerné</label>
+                    <label class="sr-onl" for="userinput1">Client</label>
                     {{ form_widget(form.dossier) }}
                     {# <input type="text" id="userinput1" class="form-control border-primary" placeholder="Compte contribuable" name="name">#}
                 </div>
@@ -48,16 +48,7 @@
                     {# <input type="text" id="userinput1" class="form-control border-primary" placeholder="Compte contribuable" name="name">#}
                 </div>
             </div>
-            <div class="row mt-3">
-                <div class="col-12">
-                    <div class="form-check">
-                        <input class="form-check-input border-primary" type="checkbox" id="sendByEmail">
-                        <label class="form-check-label" for="sendByEmail">
-                            Envoyer par mail
-                        </label>
-                    </div>
-                </div>
-            </div>
+            
 
         </div>
     </div>
