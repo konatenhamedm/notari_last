@@ -66,6 +66,19 @@ class CalendarRepository extends ServiceEntityRepository
         $stmt = $conn->executeQuery($sql);
         return $stmt->fetchAllAssociative();
     }
+
+    public function getEventDateEncours()
+    {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+        $sql = "
+                    SELECT * 
+                    FROM calendar c
+                  where c.start >= NOW() and c.active = 1
+                    ";
+        $stmt = $conn->executeQuery($sql);
+        return $stmt->fetchAllAssociative();
+    }
     public function getEventDateValide()
     {
         $conn = $this->getEntityManager()

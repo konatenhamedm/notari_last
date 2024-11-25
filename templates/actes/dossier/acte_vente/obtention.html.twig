@@ -2,7 +2,7 @@
 
 {% form_theme form 'widget/fields-block.html.twig' %}
 
-{% from '_macros/obtention.html.twig' import prototype_ligne_document_obtention %}
+{% from '_admin/macros/acte_vente.html.twig' import obtention %}
  <div class="row">
     <div class="col-md-12">
         <div class="card">
@@ -10,8 +10,18 @@
                 {{ form_start(form, {'attr': {'role':'form', 'class': 'form', 'id': route_without_prefix}}) }}
                     {{ include('_includes/ajax/response.html.twig') }}
                     <h3 style="color: orangered">Obtention titre de propriéte</h3>
-                    {# <button type="button" class="add-document btn btn-sm btn-info mb-4" data-container=".doc-list">Ajouter un document</button> #}
-                {{ prototype_ligne_document_obtention(form) }}
+                    <button type="button" class="add-document btn btn-sm btn-info mb-4" data-container=".doc-list">Ajouter un document</button>
+                        <div class="row">
+                           <div class="col-md-3">Doc</div>
+                            <div class="col-md-4">Fichier</div>
+                            <div class="col-md-3">D. Obtention</div>
+                            <div class="col-md-2">&nbsp;</div>
+                        </div>
+                    <div class="doc-list">
+                     {% for obtention in form.obtentions %}
+                        {{ obtention(obtention)}}
+                    {% endfor %}
+                    </div>
                    
                     <div class="row">
                         <div class="col-xl-12">
@@ -29,15 +39,16 @@
     </div>
 </div>
 {% endblock %}
-
 {% block javascripts %}
     <script>
-     init_select2(null, null, '.form-card');
+        $(function () {
+            init_select2(null, null, '.form-card');
+
             $('.no-auto').each(function () {
                 const $this = $(this);
                 const $id = $('#' + $this.attr('id'));
                 init_date_picker($id,  'down', (start, e) => {
-                    //$this.val(start.format('DD/MM/YYYY'));
+                      
                 }, null, null, false);
 
                 $id.on('apply.daterangepicker', function (ev, picker) {
@@ -45,115 +56,96 @@
                 });
             });
 
-        $(function () {
-            const $container = $('.proto-container');
 
-            var index = $container.find('.row-colonne').length;
+            const $container = $('.doc-list');
+            var index = $container.find('.row-line').length;
 
-
-            $(document).on('select2:select', '.select-type', function (e) {
-                const $this = $(this);
-                let field_str = $this.find('option:selected').attr('data-require-fields');
-                const $parent = $this.closest('.row-colonne');
-                let fields = [];
-                if (typeof field_str != 'undefined') {
-                    fields = field_str.split(',');
-                    for (let field of fields ) {
-                        $parent.find('.' + field).removeClass('d-none');
-                    }
-                } else {
-                    $parent.find('.source,.valeurs').addClass('d-none');
-                }
-            });
-
-
-            const $addLink = $('.add_line');
+            const $addLink = $('.add-document');
             $addLink.click(function(e) {
-                const $this  = $(this);
-                const proto_class = $this.attr('data-protoclass');
-                const name = $this.attr('data-protoname');
-                const $container = $($this.attr('data-container'));
+               
+                addLine($container);
 
-
-
-                addLine($container, name, proto_class);
-
-
-
+                //addDeleteLink($container);
+            
                 e.preventDefault(); // évite qu'un # apparaisse dans l'URL
             });
-
+            // On ajoute un premier champ automatiquement s'il n'en existe pas déjà un (cas d'une nouvelle annonce par exemple).
+            /*if (index == 0) {
+            addimputation($container);
+            } else {*/
             if (index > 0) {
-                $container.children('.row-colonne').each(function() {
+                $container.children('.row-line').each(function() {
                     const $this = $(this);
                     addDeleteLink($this);
-                    const $select = $this.find("select");
-
-
-
-                    $select.each(function() {
+                    $this.find("select").each(function() {
                         const $this = $(this);
-                        init_select2($this, null, '#exampleModalSizeSm2');
-                        if ($this.hasClass('select-type')) {
-                            let field_str = $this.find('option:selected').attr('data-require-fields');
-                            const $parent = $this.closest('.row-colonne');
-                            let fields = [];
-                            if (typeof field_str != 'undefined') {
-                                fields = field_str.split(',');
-                                for (let field of fields ) {
-                                    $parent.find('.' + field).removeClass('d-none');
-                                }
-                            } else {
-                                $parent.find('.source,.valeurs').addClass('d-none');
-                            }
-                        }
+                        init_select2($this, null, '.form-card'); 
                     });
 
-                });
 
+                    $this.find('.no-auto').each(function () {
+                        const $this = $(this);
+                        const $id = $('#' + $this.attr('id'));
+                        init_date_picker($id,  'down', (start, e) => {
+                            //$this.val(start.format('DD/MM/YYYY'));
+                        }, null, null, false);
+
+                        $id.on('apply.daterangepicker', function (ev, picker) {
+                            $(this).val(picker.startDate.format('DD/MM/YYYY'));
+                        });
+                    });
+                   
+                });
             }
 
 
-
-
             // La fonction qui ajoute un formulaire Categorie
-            function addLine($container, name, proto_class) {
+            function addLine($container) {
                 // Dans le contenu de l'attribut « data-prototype », on remplace :
                 // - le texte "__name__label__" qu'il contient par le label du champ
                 // - le texte "__name__" qu'il contient par le numéro du champ
-
-                var $prototype = $($(proto_class).attr('data-prototype')
-                    .replace(new RegExp(name + 'label__', 'g'), 'Colonne ' + (index+1))
-                    .replace(new RegExp(name, 'g'), index));
-
-
-                init_select2($prototype.find('select'), null, '#exampleModalSizeSm2');
-
-
+                var $prototype = $($("#prototype").attr('data-prototype').replace(/__name__label__/g, 'Pièce ' + (index + 1)).replace(/__name__/g, index));
                 // On ajoute au prototype un lien pour pouvoir supprimer la prestation
-                addDeleteLink($prototype, name);
+                addDeleteLink($prototype);
                 // On ajoute le prototype modifié à la fin de la balise <div>
                 $container.append($prototype);
+               
+                $prototype.find("select").each(function() {
+                   const $this = $(this);
+                   init_select2($this, null, '.form-card'); 
+                });
 
+
+                $prototype.find('.no-auto').each(function () {
+                    const $this = $(this);
+                    const $id = $('#' + $this.attr('id'));
+                    init_date_picker($id,  'down', (start, e) => {
+                        //$this.val(start.format('DD/MM/YYYY'));
+                    }, null, null, false);
+
+                    $id.on('apply.daterangepicker', function (ev, picker) {
+                        $(this).val(picker.startDate.format('DD/MM/YYYY'));
+                    });
+                });
+
+                
+
+                
                 index++;
             }
 
 
-            function addDeleteLink($prototype, name = null) {
+            function addDeleteLink($prototype) {
                 // Création du lien
-                $deleteLink = $('<a href="#" class="btn btn-danger btn-xs"><span class="fa fa-trash"></span></a>');
+                $deleteLink = $('<a href="#" class="btn btn-danger"><span class="fa fa-trash"></span></a>');
                 // Ajout du lien
                 $prototype.find(".del-col").append($deleteLink);
-
-
-
                 // Ajout du listener sur le clic du lien
                 $deleteLink.click(function(e) {
-                    const $this = $(this);
-                    const $parent = $(this).closest('.row-colonne');
-                    //console.log($(this).attr('data-parent'), $(this));
+                    const $parent = $(this).closest('.row-line');
                     $parent.remove();
 
+                    
                     if (index > 0) {
                         index -= 1;
                     }
@@ -161,9 +153,7 @@
                     e.preventDefault(); // évite qu'un # apparaisse dans l'URL
                 });
             }
-
-
-
-        })
+        });
+        
     </script>
 {% endblock %}

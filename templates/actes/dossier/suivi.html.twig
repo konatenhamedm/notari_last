@@ -78,7 +78,7 @@
         </div>
     </div>
     
-     <div class="modal-body" data-url="{{ base_url }}" data-reload="true">
+    <div class="modal-body content-doc" data-url="{{ base_url }}" data-reload="true">
        
          <div class="row">
             <div class="col-md-12">
@@ -119,12 +119,7 @@
 {% endblock %}
 
 {% block java %}
-{# <script src="{{ asset('assets/_wiz/js/jquery3.1.js') }}"></script> #}
-    		<script src="{{ asset('assets/_wiz/formwizard/jquery.smartWizard.js') }}"></script>
-		<script src="{{ asset('assets/_wiz/formwizard/fromwizard.js') }}"></script>
-		 <script src="{{ asset('assets/_wiz/js/form-wizard.js') }}"></script>
- <script src="{{ asset('assets/_wiz/plugins/jquery-steps/jquery.steps.min.js') }}"></script>
-    <script src="{{ asset('assets/_wiz/plugins/accordion-Wizard-Form/jquery.accordion-wizard.min.js') }}"></script>
+    
 
     <script>
         $(function () {
@@ -154,8 +149,6 @@
             $('#smartwizard-3').on('click', '.nav-link', function (e) {
                 e.preventDefault();
                 const $this = $(this);
-
-                //alert('hhhh')
                 if ($this.attr('data-href')) {
                     load_content($this.attr('data-href'));
                     const $parent = $this.closest('li');
@@ -181,7 +174,6 @@
 
                 }
             });
-          
 
             
             load_content($('.li-step.active').first().find('a').attr('data-href'));

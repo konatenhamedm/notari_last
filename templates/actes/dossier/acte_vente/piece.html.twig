@@ -74,27 +74,9 @@
 {% block javascripts %}
     <script>
 
-{# 
-        $('.vendeur-input').on('update-value', function (e, val, element) {
+        $('.vendeur-input').on('input', function (e, val, element) {
 
-            alert('hgh')
-            if (typeof val == 'undefined') {
-                val = $(this).val();
-            }
-
-            if (!element) {
-                element = this;
-            }
-            const $tr = $(element).closest('tr');
-            const coeff = +$tr.find('.input-coeff').val();
-            const $total = $tr.find('.col-total');
-            $total.text( setValue(coeff * +val.replaceAll(' ', '') ) );
-            update_totaux();
-        }); #}
-
-     /*   $('.vendeur-input').on('input', function (e, val, element) {
-
- 
+       alert("kbkjhj")
             if (typeof val == 'undefined') {
                 val = $(this).val();
             }
@@ -109,7 +91,7 @@
            
             const $text = 'La somme du montant acheteur et montant vendeur est superieure au montant total '+$('.total').val()
            
-        });*/
+        });
 
       
      

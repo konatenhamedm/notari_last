@@ -70,62 +70,7 @@
             <div class="d-flex flex-column flex-grow-1 pe-8">
               <!-- begin::Stats -->
               <div class="d-flex flex-wrap">
-                <!-- begin::Stat -->
-                <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
-                  <!-- begin::Number -->
-                  <div class="d-flex align-items-center">
-                    <i class="ki-outline ki-arrow-up fs-3 text-success me-2"></i> <div class="fs-2 fw-bold counted" data-kt-countup="true" data-kt-countup-value="4500" data-kt-countup-prefix="$" data-kt-initialized="1">
-                    {# {{ menu.nombreDemandeStat('demande_valider_directeur',null) }} #} 0</div>
-                  </div>
-                  <!-- end::Number -->
-
-                  <!-- begin::Label -->
-                  <div class="fw-semibold fs-6 text-gray-400" style="color: red;font-size:18px">Nombre demandes en attente validation</div>
-                  <!-- end::Label -->
-                </div>
-                <!-- end::Stat -->
-
-                <!-- begin::Stat -->
-                <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
-                  <!-- begin::Number -->
-                  <div class="d-flex align-items-center">
-                    <i class="ki-outline ki-arrow-down fs-3 text-danger me-2"></i> <div class="fs-2 fw-bold counted" data-kt-countup="true" data-kt-countup-value="80" data-kt-initialized="1">
-                   {#  {{ menu.nombreDemandeStat(null,null)}} #} 0</div>
-                  </div>
-                  <!-- end::Number -->
-
-                  <!-- begin::Label -->
-                  <div class="fw-semibold fs-6 text-gray-400" style="color: red;font-size:18px">Nombre de demandes</div>
-                  <!-- end::Label -->
-                </div>
-                <!-- end::Stat -->
-
-                <!-- begin::Stat -->
-                <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
-                  <!-- begin::Number -->
-                  <div class="d-flex align-items-center">
-                    <i class="ki-outline ki-arrow-up fs-3 text-success me-2"></i> <div class="fs-2 fw-bold counted" data-kt-countup="true" data-kt-countup-value="60" data-kt-countup-prefix="%" data-kt-initialized="1">
-                    {#  {{ menu.nombreDemandeStat('demande_valider',null)}} #} 0</div>
-                  </div>
-                  <!-- end::Number -->
-
-                  <!-- begin::Label -->
-                  <div class="fw-semibold fs-6 text-gray-400" style="color: red;font-size:18px">Nombre de demandes acceptées</div>
-                  <!-- end::Label -->
-                </div>
-                <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
-                  <!-- begin::Number -->
-                  <div class="d-flex align-items-center">
-                    <i class="ki-outline ki-arrow-up fs-3 text-success me-2"></i> <div class="fs-2 fw-bold counted" data-kt-countup="true" data-kt-countup-value="60" data-kt-countup-prefix="%" data-kt-initialized="1">
-                    {#  {{ menu.nombreDemandeStat('demande_refuser',null)}} #} 0</div>
-                  </div>
-                  <!-- end::Number -->
-
-                  <!-- begin::Label -->
-                  <div class="fw-semibold fs-6 text-gray-400" style="color: red;font-size:18px">Nombre de demandes réfsuées</div>
-                  <!-- end::Label -->
-                </div>
-                <!-- end::Stat -->
+               
               </div>
 
               <!-- end::Stats ko nate-->
@@ -155,11 +100,11 @@
                                 <div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event bg-secondary" data-class="bg-secondary">
                                     <div class="fc-event-main">My Event 2</div>
                                 </div>#}
-                                {% for liste in listes %}
-                                    <div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event bg-primary mb-2 " style="padding-left: 5px;" data-class="bg-primary">
+                                {% for liste in listesEncours %}
+                                    <div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event bg-warning" data-class="bg-warning">
                                         <div class="fc-event-main">
-                                            <a style="color:white !important;" href="{{ path('event_detaiils',{'id':liste.id }) }}"  data-bs-toggle="modal" data-bs-target="#exampleModalSizeLg2">
-                                                <i class="fe fe-plus" style="color:white;"></i>{{ liste.title | upper }}
+                                            <a href="{{ path('event_detaiils',{'id':liste.id }) }}"  data-bs-toggle="modal" data-bs-target="#exampleModalSizeLg2">
+                                                <i class="fe fe-plus"></i>{{ liste.title }}
                                             </a>
                                         </div>
                                     </div>
