@@ -29,11 +29,7 @@ class CalendarController extends BaseController
     #[Route('/{etat}', name: 'app_agenda_calendar_index', methods: ['GET', 'POST'])]
     public function index(Request $request, DataTableFactory $dataTableFactory, $etat): Response
     {
-        if ($etat == "prochain") {
-            $titre = 'Liste des évènements à venir';
-        } else {
-            $titre = 'Liste des évènements passés';
-        }
+
 
         $permission = $this->menu->getPermissionIfDifferentNull($this->security->getUser()->getGroupe()->getId(), self::INDEX_ROOT_NAME);
 
@@ -164,13 +160,15 @@ class CalendarController extends BaseController
             'datatable' => $table,
             'permition' => $permission,
             'etat' => $etat,
-            'titre' => $titre
+            'titre' => "Liste des  activités"
         ]);
     }
 
     #[Route('/new/new', name: 'app_agenda_calendar_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, FormError $formError): Response
     {
+
+        $titre = "Ajouter un événement";
         $calendar = new Calendar();
         $form = $this->createForm(CalendarType::class, $calendar, [
             'method' => 'POST',
@@ -186,24 +184,24 @@ class CalendarController extends BaseController
         if ($form->isSubmitted()) {
             $response = [];
             $redirect = $this->generateUrl('app_config_parametre_agenda_index');
-            $email = "";
-            if ($form->getData()->getClient()->getRaisonSocial() == "") {
-                $email = $form->getData()->getClient()->getEmail();
-            } else {
+            // $email = "";
+            // if ($form->getData()->getClient()->getRaisonSocial() == "") {
+            //     $email = $form->getData()->getClient()->getEmail();
+            // } else {
 
-                $email = $form->getData()->getClient()->getEmailEntreprise();
-            }
+            //     $email = $form->getData()->getClient()->getEmailEntreprise();
+            // }
 
-            $identite = "";
-            //dd($form->getData()->getClient());
-            if ($form->getData()->getClient()->getRaisonSocial() == "") {
-                $identite = $form->getData()->getClient()->getNom() . " " . $form->getData()->getClient()->getPrenom();
-            } else {
+            // $identite = "";
+            // //dd($form->getData()->getClient());
+            // if ($form->getData()->getClient()->getRaisonSocial() == "") {
+            //     $identite = $form->getData()->getClient()->getNom() . " " . $form->getData()->getClient()->getPrenom();
+            // } else {
 
-                $identite = $form->getData()->getClient()->getRaisonSocial();
-            }
+            //     $identite = $form->getData()->getClient()->getRaisonSocial();
+            // }
 
-            $objet = $form->getData()->getDescription();
+            // $objet = $form->getData()->getDescription();
             if ($form->isValid()) {
                 /*     $mailerService->send(
                     'INFORMATION CONCERNANT LE RENDEZ-VOUS',
@@ -221,7 +219,7 @@ class CalendarController extends BaseController
                     ->setAllDay(false)
                     ->setBackgroundColor("#31F74F")
                     ->setBorderColor("#BBF0DA")
-                    ->setTextColor("#FFF");
+                    ->setTextColor("#FAF421");
                 $calendar->setEntreprise($this->entreprise);
                 $entityManager->persist($calendar);
                 $entityManager->flush();
@@ -252,6 +250,7 @@ class CalendarController extends BaseController
         return $this->renderForm('agenda/calendar/new.html.twig', [
             'calendar' => $calendar,
             'form' => $form,
+            'titre' => $titre
         ]);
     }
 

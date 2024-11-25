@@ -39,12 +39,12 @@ class ConfigAgendaController extends BaseController
          }*/
         $modules = [
             [
-                'label' => 'Evènements à venir',
+                'label' => 'Activités à venir',
                 'icon' => 'bi bi-list',
                 'href' => $this->generateUrl('app_agenda_calendar_index', ['etat' => 'prochain'])
             ],
             [
-                'label' => 'Evènements à passés',
+                'label' => 'Activités à passés',
                 'icon' => 'bi bi-users',
                 'href' => $this->generateUrl('app_agenda_calendar_index', ['etat' => 'passe'])
             ]
@@ -66,7 +66,7 @@ class ConfigAgendaController extends BaseController
             'modules' => $modules,
             'breadcrumb' => $breadcrumb,
             'permition' => $permission,
-            'titre' => 'Gestion des  Evènements ',
+            'titre' => 'Programmation des activités',
             'type' => 'agenda'
         ]);
     }

@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Calendar;
-use App\Entity\Client;
+use App\Entity\Dossier;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -11,6 +11,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -22,27 +23,24 @@ class CalendarType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title')
-            ->add('client', EntityType::class, [
+            ->add('title', TextType::class, [
                 'required' => false,
-                'class' => Client::class,
+                'label' => 'Libellé activité',
+
+            ])
+            ->add('dossier', EntityType::class, [
+                'required' => false,
+                'class' => Dossier::class,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('u')
-                        ->where('u.active = :val')
-                        ->setParameter('val', 1)
+                        // ->where('u.active = :val')
+                        // ->setParameter('val', 1)
                         ->orderBy('u.id', 'DESC');
                 },
                 'label' => 'Réceptionné par',
                 'placeholder' => "Selectionner le client",
-                'choice_label' => function ($client) {
-
-                    if ($client->getRaisonSocial() == "") {
-                        return $client->getNom() . ' ' . $client->getPrenom();
-                    } else {
-
-                        return $client->getRaisonSocial();
-                    }
-                },
+                'choice_label' => "objet",
+               
                 'attr' => ['class' => 'form-control has-select2', 'id' => 'validationCustom05']
 
             ])
@@ -79,7 +77,10 @@ class CalendarType extends AbstractType
                     ]),
                 ]
             ])
-            ->add('description', TextType::class);
+            ->add('description', TextareaType::class, [
+                'required' => false,
+                'label' => 'Description',
+            ]);
         /* ->add('all_day', CheckboxType::class, [
                 'label' => false,
                 'required' => false,

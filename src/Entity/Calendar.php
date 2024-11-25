@@ -46,6 +46,7 @@ class Calendar
     #[ORM\ManyToOne(inversedBy: 'calendars')]
     private ?Entreprise $entreprise = null;
 
+
     public function getId(): ?int
     {
         return $this->id;
