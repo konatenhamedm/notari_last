@@ -28,7 +28,7 @@ class Type
     #[ORM\OneToMany(targetEntity: Dossier::class, mappedBy: 'typeActe')]
     private $dossiers;
     #[ORM\OneToMany(targetEntity: Archive::class, mappedBy: 'typeActe')]
-    private $archives;
+    private $ar;
 
     #[ORM\OneToMany(targetEntity: GestionWorkflow::class, mappedBy: 'type')]
     private $gestionWorkflows;
@@ -135,36 +135,6 @@ class Type
             // set the owning side to null (unless already changed)
             if ($dossier->getTypeActe() === $this) {
                 $dossier->setTypeActe(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Archive>
-     */
-    public function getArchives(): Collection
-    {
-        return $this->archives;
-    }
-
-    public function addArchive(Archive $archive): self
-    {
-        if (!$this->archives->contains($archive)) {
-            $this->archives[] = $archive;
-            $archive->setTypeActe($this);
-        }
-
-        return $this;
-    }
-
-    public function removeArchive(Archive $archive): self
-    {
-        if ($this->archives->removeElement($archive)) {
-            // set the owning side to null (unless already changed)
-            if ($archive->getTypeActe() === $this) {
-                $archive->setTypeActe(null);
             }
         }
 

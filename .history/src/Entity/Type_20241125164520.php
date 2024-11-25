@@ -159,12 +159,12 @@ class Type
         return $this;
     }
 
-    public function removeArchive(Archive $archive): self
+    public function removeArchive(Archive $dossier): self
     {
-        if ($this->archives->removeElement($archive)) {
+        if ($this->dossiers->removeElement($dossier)) {
             // set the owning side to null (unless already changed)
-            if ($archive->getTypeActe() === $this) {
-                $archive->setTypeActe(null);
+            if ($dossier->getTypeActe() === $this) {
+                $dossier->setTypeActe(null);
             }
         }
 

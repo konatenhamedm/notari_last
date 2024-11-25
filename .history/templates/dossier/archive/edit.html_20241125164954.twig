@@ -2,7 +2,7 @@
     {% form_theme form 'widget/fields-block.html.twig' %}
      {% from '_macros/archive.html.twig' import prototype_ligne_document_dossier %}
     <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Création Archive</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Edition Archive</h5>
         <div class="btn btn-icon btn-sm  ms-2" data-bs-dismiss="modal" aria-label="Close">
             <span class="svg-icon svg-icon-2x text-white">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -15,14 +15,14 @@
     {{ form_start(form, {'attr': {'role':'form', 'class': 'form'}}) }}
     <div class="modal-body content-doc">
         {{ include('_includes/ajax/response.html.twig') }}
-            <div class="row">
-                <div class="col-md-3">{{ form_row(form.numeroOuverture) }}</div>
-                <div class="col-md-3">{{ form_row(form.dateOuverture) }}</div>
-                <div class="col-md-6">{{ form_row(form.typeActe) }}</div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">{{ form_row(form.objet) }}</div>
-            </div>
+              <div class="row">
+            <div class="col-md-3">{{ form_row(form.numeroOuverture) }}</div>
+            <div class="col-md-3">{{ form_row(form.dateOuverture) }}</div>
+            <div class="col-md-6">{{ form_row(form.typeAct) }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">{{ form_row(form.objet) }}</div>
+        </div>
         <div class="row">
             <div class="col-md-12">{{ form_row(form.description) }}</div>
         </div>

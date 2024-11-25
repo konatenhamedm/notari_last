@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Archive;
 use App\Entity\Client;
-use App\Entity\Type;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

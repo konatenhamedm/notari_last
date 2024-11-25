@@ -35,22 +35,18 @@ class ArchiveController extends BaseController
         $permission = $this->menu->getPermissionIfDifferentNull($this->security->getUser()->getGroupe()->getId(), self::INDEX_ROOT_NAME);
 
         $table = $dataTableFactory->create()
-            ->add('numeroOuverture', TextColumn::class, ['label' => 'N° ouverture'])
+            ->add('numeroOuverture', TextColumn::class, ['label' => 'Numéro ouverture'])
             ->add('dateOuverture', DateTimeColumn::class, ['label' => 'Date d\'ouverture', 'format' => 'd/m/Y', 'searchable' => false])
             ->add('objet', TextColumn::class, ['label' => 'Objet'])
-            ->add('typeActe', TextColumn::class, ['label' => 'Type d\'acte', 'field' => 't.titre'])
-
-            ->add('numeroClassification', TextColumn::class,  ['label' => 'N° classification'])
+            ->add('numeroClassification', TextColumn::class,  ['label' => 'Numéro classification'])
             ->add('dateClassification', DateTimeColumn::class, ['label' => 'Date classification', 'format' => 'd/m/Y', 'searchable' => false])
 
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Archive::class,
                 'query' => function (QueryBuilder $qb) {
-                    $qb->select(['p', 'en', 't'])
+                    $qb->select(['p', 'en'])
                         ->from(Archive::class, 'p')
                         ->join('p.entreprise', 'en')
-                    ->innerJoin('p.typeActe', 't')
-
                         ->orderBy('p.id ', 'DESC');
                     if ($this->groupe != "SADM") {
                         $qb->andWhere('en = :entreprise')

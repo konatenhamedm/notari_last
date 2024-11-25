@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Archive;
 use App\Entity\Client;
-use App\Entity\Type;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -66,20 +65,8 @@ class ArchiveType extends AbstractType
             ])
             ->add('numeroClassification', null, ['label' => 'Numéro de classification', 'empty_data' =>  ''])
             ->add('numeroOuverture', null, ['label' => 'Numéro d\'ouverture', 'empty_data' =>  ''])
-        ->add('typeActe', EntityType::class, [
-            'required' => true,
-            'class' => Type::class,
-            'choice_attr' => function (Type $type) {
-                return ['data-code' => $type->getCode()];
-            },
-
-            'label' => 'Type d\'acte',
-            'attr' => ['class' => 'form-control has-select2'],
-            'choice_label' => 'titre',
-
-        ])
             ->add('objet', null, ['label' => 'Objet', 'empty_data' => ''])
-
+            
             ->add('description', TextareaType::class, ['label' => 'Description', 'required' => false, 'empty_data' => ''])
 
             ->add('dateOuverture', DateType::class, [

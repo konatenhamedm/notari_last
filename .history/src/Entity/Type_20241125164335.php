@@ -144,27 +144,27 @@ class Type
     /**
      * @return Collection<int, Archive>
      */
-    public function getArchives(): Collection
+    public function getQ(): Collection
     {
-        return $this->archives;
+        return $this->dossiers;
     }
 
-    public function addArchive(Archive $archive): self
+    public function addDossier(Dossier $dossier): self
     {
-        if (!$this->archives->contains($archive)) {
-            $this->archives[] = $archive;
-            $archive->setTypeActe($this);
+        if (!$this->dossiers->contains($dossier)) {
+            $this->dossiers[] = $dossier;
+            $dossier->setTypeActe($this);
         }
 
         return $this;
     }
 
-    public function removeArchive(Archive $archive): self
+    public function removeDossier(Dossier $dossier): self
     {
-        if ($this->archives->removeElement($archive)) {
+        if ($this->dossiers->removeElement($dossier)) {
             // set the owning side to null (unless already changed)
-            if ($archive->getTypeActe() === $this) {
-                $archive->setTypeActe(null);
+            if ($dossier->getTypeActe() === $this) {
+                $dossier->setTypeActe(null);
             }
         }
 
