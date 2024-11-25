@@ -16,18 +16,23 @@ class Identification
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'vendeurs')]
-    #[Assert\NotBlank(message: 'Veuillez sélectionner un vendeur', groups: ['identification'])]
-    private $vendeur;
+    // #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'vendeurs')]
+    // #[Assert\NotBlank(message: 'Veuillez sélectionner un vendeur', groups: ['identification'])]
+    // private $vendeur;
 
     #[ORM\ManyToOne(targetEntity: Dossier::class, inversedBy: 'identifications')]
     #[ORM\JoinColumn(onDelete: "CASCADE")]
     private $dossier;
 
-    #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'acheteurs')]
-    #[Assert\NotBlank(message: 'Veuillez sélectionner un acheteur', groups: ['identification'])]
-    private $acheteur;
+    // #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'acheteurs')]
+    // #[Assert\NotBlank(message: 'Veuillez sélectionner un acheteur', groups: ['identification'])]
+    // private $acheteur;
 
+    #[ORM\ManyToOne(inversedBy: 'identifications')]
+    private ?Client $clients = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $attribut = null;
 
 
     public function getId(): ?int
@@ -36,17 +41,17 @@ class Identification
     }
 
 
-    public function getVendeur(): ?Client
-    {
-        return $this->vendeur;
-    }
+    // public function getVendeur(): ?Client
+    // {
+    //     return $this->vendeur;
+    // }
 
-    public function setVendeur(?Client $vendeur): self
-    {
-        $this->vendeur = $vendeur;
+    // public function setVendeur(?Client $vendeur): self
+    // {
+    //     $this->vendeur = $vendeur;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getDossier(): ?Dossier
     {
@@ -60,14 +65,37 @@ class Identification
         return $this;
     }
 
-    public function getAcheteur(): ?Client
+    // public function getAcheteur(): ?Client
+    // {
+    //     return $this->acheteur;
+    // }
+
+    // public function setAcheteur(?Client $acheteur): self
+    // {
+    //     $this->acheteur = $acheteur;
+
+    //     return $this;
+    // }
+    public function getAttribut(): ?string
     {
-        return $this->acheteur;
+        return $this->attribut;
     }
 
-    public function setAcheteur(?Client $acheteur): self
+    public function setAttribut(string $attribut): static
     {
-        $this->acheteur = $acheteur;
+        $this->attribut = $attribut;
+
+        return $this;
+    }
+
+    public function getClients(): ?Client
+    {
+        return $this->clients;
+    }
+
+    public function setClients(?Client $clients): static
+    {
+        $this->clients = $clients;
 
         return $this;
     }

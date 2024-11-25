@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Calendar;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,7 +16,7 @@ class Calendar1Type extends AbstractType
             ->add('title')
             ->add('start')
             ->add('end')
-            ->add('description')
+            ->add('description',TextareaType::class, ['required' => false])
             ->add('all_day')
             ->add('background_color')
             ->add('border_color')

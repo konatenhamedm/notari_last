@@ -3,20 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\PieceRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PieceRepository::class)]
 class Piece
 {
 
-    const ORIGINE_ACHETEUR = 1;
-
-    const ORIGINE_VENDEUR = 2;
-
-    const ORIGINES = [
-        'Acheteur' => 1,
-        'Vendeur' => 2
-    ];
+ 
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -24,40 +18,45 @@ class Piece
     private $id;
 
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private $dateTransmission;
-
     #[ORM\ManyToOne(targetEntity: Dossier::class, inversedBy: 'pieces')]
     #[ORM\JoinColumn(onDelete: "CASCADE")]
     private $dossier;
 
 
-    #[ORM\ManyToOne(cascade: ["persist"], fetch: "EAGER")]
+    #[ORM\OneToOne(cascade: ["persist"], fetch: "EAGER")]
     #[ORM\JoinColumn(nullable: true)]
-    private ?FichierAdmin $fichier = null;
+    private ?FichierAdmin $path = null;
+    
 
-    #[ORM\ManyToOne(targetEntity: DocumentTypeActe::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?DocumentTypeActe $document = null;
-
-
-
-    #[ORM\Column(type: 'smallint')]
-    private $origine;
-
-    #[ORM\Column(type: 'string', length: 150)]
-    private $libDocument;
-
-    #[ORM\Column(type: 'boolean')]
-    private $client;
+    #[ORM\Column(length: 255)]
+    private ?string $attribut = null;
 
 
+
+    #[ORM\ManyToOne(inversedBy: 'allPieces')]
+    private ?Client $client = null;
+
+    #[ORM\ManyToOne(inversedBy: 'pieces')]
+    private ?DocumentTypeClient $type = null;
 
 
 
     public function __construct()
     {
-        $this->setClient(false);
+    
+    }
+
+    
+    public function getPath(): ?FichierAdmin
+    {
+        return $this->path;
+    }
+
+    public function setPath(?FichierAdmin $path): self
+    {
+        $this->path = $path;
+
+        return $this;
     }
 
     public function getId(): ?int
@@ -65,19 +64,6 @@ class Piece
         return $this->id;
     }
 
-
-
-    public function getDateTransmission(): ?\DateTimeInterface
-    {
-        return $this->dateTransmission;
-    }
-
-    public function setDateTransmission(\DateTimeInterface $dateTransmission): self
-    {
-        $this->dateTransmission = $dateTransmission;
-
-        return $this;
-    }
 
     public function getDossier(): ?Dossier
     {
@@ -91,67 +77,44 @@ class Piece
         return $this;
     }
 
-
-
-    public function getFichier(): ?FichierAdmin
+    public function getAttribut(): ?string
     {
-        return $this->fichier;
+        return $this->attribut;
     }
 
-    public function setFichier(?FichierAdmin $fichier): self
+    public function setAttribut(string $attribut): static
     {
-        /* if ($fichier->getFile() || ($fichier && $fichier->getId())) { */
-        $this->fichier = $fichier;
-        /* } */
+        $this->attribut = $attribut;
 
         return $this;
     }
 
-    public function getDocument(): ?DocumentTypeActe
-    {
-        return $this->document;
-    }
 
-    public function setDocument(?DocumentTypeActe $document): self
-    {
-        $this->document = $document;
 
-        return $this;
-    }
 
-    public function getOrigine(): ?int
-    {
-        return $this->origine;
-    }
-
-    public function setOrigine(int $origine): self
-    {
-        $this->origine = $origine;
-
-        return $this;
-    }
-
-    public function getLibDocument(): ?string
-    {
-        return $this->libDocument;
-    }
-
-    public function setLibDocument(string $libDocument): self
-    {
-        $this->libDocument = $libDocument;
-
-        return $this;
-    }
-
-    public function getClient(): ?bool
+    public function getClient(): ?Client
     {
         return $this->client;
     }
 
-    public function setClient(bool $client): self
+    public function setClient(?Client $client): static
     {
         $this->client = $client;
 
         return $this;
     }
+
+    public function getType(): ?DocumentTypeClient
+    {
+        return $this->type;
+    }
+
+    public function setType(?DocumentTypeClient $type): static
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+
 }

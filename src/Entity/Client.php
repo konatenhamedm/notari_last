@@ -203,11 +203,11 @@ class Client
 
 
 
-    #[ORM\OneToMany(targetEntity: Identification::class, mappedBy: 'vendeur', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    private $vendeurs;
+    // #[ORM\OneToMany(targetEntity: Identification::class, mappedBy: 'vendeur', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    // private $vendeurs;
 
-    #[ORM\OneToMany(targetEntity: Identification::class, mappedBy: 'acheteur', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    private $acheteurs;
+    // #[ORM\OneToMany(targetEntity: Identification::class, mappedBy: 'acheteur', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    // private $acheteurs;
 
     #[ORM\ManyToOne(inversedBy: 'clients')]
     private ?Entreprise $entreprise = null;
@@ -215,6 +215,24 @@ class Client
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: DocumentClient::class, cascade: ['persist', 'remove'])]
     private Collection $documentClients;
 
+    #[ORM\OneToMany(mappedBy: 'clients', targetEntity: Identification::class, cascade: ['persist', 'remove'])]
+    private Collection $identifications;
+
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: Piece::class, cascade: ['persist', 'remove'])]
+    private Collection $pieces;
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: PaiementFrais::class, cascade: ['persist', 'remove'])]
+    private Collection $paiementFrais;
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: Calendar::class)]
+    private Collection $calendars;
+
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: Piece::class)]
+    private Collection $allPieces;
+
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: Compte::class)]
+    private Collection $comptes;
+
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: DocumentSigne::class)]
+    private Collection $documentSignes;
 
     public function __construct()
     {
@@ -223,9 +241,17 @@ class Client
         $this->faitLe = new \DateTime('now');
         $this->acteConstitutions = new ArrayCollection();
         $this->documents = new ArrayCollection();
-        $this->vendeurs = new ArrayCollection();
-        $this->acheteurs = new ArrayCollection();
+        $this->calendars = new ArrayCollection();
+        // $this->acheteurs = new ArrayCollection();
         $this->documentClients = new ArrayCollection();
+        $this->paiementFrais = new ArrayCollection();
+        $this->identifications = new ArrayCollection();
+        $this->pieces = new ArrayCollection();
+        $this->allPieces = new ArrayCollection();
+        $this->comptes = new ArrayCollection();
+        $this->documentSignes = new ArrayCollection();
+
+
     }
 
     public  function getNomPrenoms()
@@ -1002,65 +1028,67 @@ class Client
         return $this;
     }
 
-    /**
-     * @return Collection<int, Identification>
-     */
-    public function getVendeurs(): Collection
-    {
-        return $this->vendeurs;
-    }
+    // /**
+    //  * @return Collection<int, Identification>
+    //  */
+    // public function getVendeurs(): Collection
+    // {
+    //     return $this->vendeurs;
+    // }
 
-    public function addVendeur(Identification $vendeur): self
-    {
-        if (!$this->vendeurs->contains($vendeur)) {
-            $this->vendeurs[] = $vendeur;
-            $vendeur->setVendeur($this);
-        }
+    // public function addVendeur(Identification $vendeur): self
+    // {
+    //     if (!$this->vendeurs->contains($vendeur)) {
+    //         $this->vendeurs[] = $vendeur;
+    //         $vendeur->setVendeur($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeVendeur(Identification $vendeur): self
-    {
-        if ($this->vendeurs->removeElement($vendeur)) {
-            // set the owning side to null (unless already changed)
-            if ($vendeur->getVendeur() === $this) {
-                $vendeur->setVendeur(null);
-            }
-        }
+    // public function removeVendeur(Identification $vendeur): self
+    // {
+    //     if ($this->vendeurs->removeElement($vendeur)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($vendeur->getVendeur() === $this) {
+    //             $vendeur->setVendeur(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    /**
-     * @return Collection<int, Identification>
-     */
-    public function getAcheteurs(): Collection
-    {
-        return $this->acheteurs;
-    }
+    // /**
+    //  * @return Collection<int, Identification>
+    //  */
+    // public function getAcheteurs(): Collection
+    // {
+    //     return $this->acheteurs;
+    // }
 
-    public function addAcheteur(Identification $acheteur): self
-    {
-        if (!$this->acheteurs->contains($acheteur)) {
-            $this->acheteurs[] = $acheteur;
-            $acheteur->setAcheteur($this);
-        }
+    // public function addAcheteur(Identification $acheteur): self
+    // {
+    //     if (!$this->acheteurs->contains($acheteur)) {
+    //         $this->acheteurs[] = $acheteur;
+    //         $acheteur->setAcheteur($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeAcheteur(Identification $acheteur): self
-    {
-        if ($this->acheteurs->removeElement($acheteur)) {
-            // set the owning side to null (unless already changed)
-            if ($acheteur->getAcheteur() === $this) {
-                $acheteur->setAcheteur(null);
-            }
-        }
+    // public function removeAcheteur(Identification $acheteur): self
+    // {
+    //     if ($this->acheteurs->removeElement($acheteur)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($acheteur->getAcheteur() === $this) {
+    //             $acheteur->setAcheteur(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
+
+    
 
     public function getEntreprise(): ?Entreprise
     {
@@ -1103,4 +1131,185 @@ class Client
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Identification>
+     */
+    public function getIdentifications(): Collection
+    {
+        return $this->identifications;
+    }
+
+    public function addIdentification(Identification $identification): static
+    {
+        if (!$this->identifications->contains($identification)) {
+            $this->identifications->add($identification);
+            $identification->setClients($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdentification(Identification $identification): static
+    {
+        if ($this->identifications->removeElement($identification)) {
+            // set the owning side to null (unless already changed)
+            if ($identification->getClients() === $this) {
+                $identification->setClients(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PaiementFrais>
+     */
+    public function getPaiementFrais(): Collection
+    {
+        return $this->paiementFrais;
+    }
+
+    public function addPaiementFrai(PaiementFrais $paiementFrai): static
+    {
+        if (!$this->paiementFrais->contains($paiementFrai)) {
+            $this->paiementFrais->add($paiementFrai);
+            $paiementFrai->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removePaiementFrai(PaiementFrais $paiementFrai): static
+    {
+        if ($this->paiementFrais->removeElement($paiementFrai)) {
+            // set the owning side to null (unless already changed)
+            if ($paiementFrai->getClient() === $this) {
+                $paiementFrai->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Piece>
+     */
+    public function getDPiece(): Collection
+    {
+        return $this->documentClients;
+    }
+
+    public function addPiece(DocumentClient $pieces): static
+    {
+        if (!$this->pieces->contains($pieces)) {
+            $this->pieces->add($pieces);
+            $pieces->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removePiece(Piece $pieces): static
+    {
+        if ($this->pieces->removeElement($pieces)) {
+            // set the owning side to null (unless already changed)
+            if ($pieces->getClient() === $this) {
+                $pieces->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Piece>
+     */
+    public function getAllPieces(): Collection
+    {
+        return $this->allPieces;
+    }
+
+    public function addAllPiece(Piece $allPiece): static
+    {
+        if (!$this->allPieces->contains($allPiece)) {
+            $this->allPieces->add($allPiece);
+            $allPiece->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAllPiece(Piece $allPiece): static
+    {
+        if ($this->allPieces->removeElement($allPiece)) {
+            // set the owning side to null (unless already changed)
+            if ($allPiece->getClient() === $this) {
+                $allPiece->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Compte>
+     */
+    public function getComptes(): Collection
+    {
+        return $this->comptes;
+    }
+
+    public function addCompte(Compte $compte): static
+    {
+        if (!$this->comptes->contains($compte)) {
+            $this->comptes->add($compte);
+            $compte->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompte(Compte $compte): static
+    {
+        if ($this->comptes->removeElement($compte)) {
+            // set the owning side to null (unless already changed)
+            if ($compte->getClient() === $this) {
+                $compte->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DocumentSigne>
+     */
+    public function getDocumentSignes(): Collection
+    {
+        return $this->documentSignes;
+    }
+
+    public function addDocumentSigne(DocumentSigne $documentSigne): static
+    {
+        if (!$this->documentSignes->contains($documentSigne)) {
+            $this->documentSignes->add($documentSigne);
+            $documentSigne->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocumentSigne(DocumentSigne $documentSigne): static
+    {
+        if ($this->documentSignes->removeElement($documentSigne)) {
+            // set the owning side to null (unless already changed)
+            if ($documentSigne->getClient() === $this) {
+                $documentSigne->setClient(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

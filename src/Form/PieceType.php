@@ -4,7 +4,9 @@ namespace App\Form;
 
 use App\Entity\Client;
 use App\Entity\DocumentTypeActe;
+use App\Entity\DocumentTypeClient;
 use App\Entity\Piece;
+use App\Form\DataTransformer\ThousandNumberTransformer;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -25,33 +27,30 @@ class PieceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            /*   ->add(
-                'montantAcheteur',
-                TextType::class,
-
-                ['label' => 'Montant total', 'attr' => ['class' => 'input-money input-mnt'], 'empty_data' => '0',]
-            )
-            ->add(
-                'montantVendeur',
-                TextType::class,
-
-                ['label' => 'Montant total', 'attr' => ['class' => 'input-money input-mnt'], 'empty_data' => '0',]
-            ) */
-            ->add('client', CheckboxType::class, ['required' => false, 'attr' => ['class' => 'ck-client']])
-            ->add('document', EntityType::class, [
-                'required' => false,
-                'placeholder' => '---',
+           
+        ->add('client', EntityType::class, [
+            'label' => false,
+            'class' => Client::class,
+            'choice_label' => 'nom',
+            'attr' => ['class' => 'form-control has-select2']
+        ])
+        ->add('type', EntityType::class, [
+            'label' => false,
+            'class' => DocumentTypeClient::class,
+            'choice_label' => 'libelle',
+            'attr' => ['class' => 'form-control has-select2']
+        ])
+        ->add('path', FichierType::class, ['label' => false,  'doc_options' => $options['doc_options'], 'required' => $options['doc_required'] ?? true])
+       /*  ->add(
+            'montant',
+            TextType::class,
+            [
                 'label' => false,
-                'class' => DocumentTypeActe::class,
-                'choice_label' => 'libelle',
-                'attr' => ['class' => 'form-control has-select2']
-            ])
-            ->add('libDocument', null, ['label' => false, 'empty_data' => '', 'attr' => ['class' => 'lib-document']])
-            ->add('fichier', FichierType::class, ['label' => 'Fichier', 'label' => false, 'doc_options' => $options['doc_options'], 'required' => $options['doc_required'] ?? true])
-            ->add('dateTransmission', DateType::class, [
-                'label' => false, 'html5' => false, 'attr' => ['class' => 'has-datepicker no-auto skip-init', 'autocomplete' => 'off'], 'widget' => 'single_text', 'format' => 'dd/MM/yyyy', 'empty_data' => date('d/m/Y')
-            ])
-            ->add('origine', ChoiceType::class, ['choices' => Piece::ORIGINES, 'attr' => ['class' => 'origine']]);
+                'attr' => ['class' => 'input-money input-mnt'], 'empty_data' => '0',
+            ]
+        ) */
+        ->add('attribut', TextType::class, ['label' => 'Attribut', 'label' => false, 'required' => false]);
+        //$builder->get('montant')->addModelTransformer(new ThousandNumberTransformer());
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -60,8 +59,6 @@ class PieceType extends AbstractType
             'data_class' => Piece::class,
             'doc_required' => true
         ]);
-
-
         $resolver->setRequired('doc_options');
         $resolver->setRequired('doc_required');
     }

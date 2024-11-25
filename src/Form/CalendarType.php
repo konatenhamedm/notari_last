@@ -6,6 +6,7 @@ use App\Entity\Calendar;
 use App\Entity\Dossier;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
+use Mpdf\Tag\TextArea;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -77,10 +78,7 @@ class CalendarType extends AbstractType
                     ]),
                 ]
             ])
-            ->add('description', TextareaType::class, [
-                'required' => false,
-                'label' => 'Description',
-            ]);
+            ->add('description', TextareaType::class);
         /* ->add('all_day', CheckboxType::class, [
                 'label' => false,
                 'required' => false,

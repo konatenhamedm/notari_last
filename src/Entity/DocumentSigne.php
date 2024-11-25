@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\DocumentSigneRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DocumentSigneRepository::class)]
@@ -14,30 +15,16 @@ class DocumentSigne
     private $id;
 
 
-
-
     #[ORM\ManyToOne(targetEntity: Dossier::class, inversedBy: 'documentSignes')]
     #[ORM\JoinColumn(onDelete: "CASCADE")]
     private $dossier;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE,nullable:true)]
+    private ?\DateTimeInterface $dateSignature = null;
 
+    #[ORM\ManyToOne(inversedBy: 'documentSignes')]
+    private ?Client $client = null;
 
-    #[ORM\ManyToOne(cascade: ["persist"], fetch: "EAGER")]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?FichierAdmin $fichier = null;
-
-    #[ORM\ManyToOne(targetEntity: DocumentTypeActe::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    private $document;
-
-    #[ORM\Column(type: 'date', nullable: true)]
-    private $dateAcheteur;
-
-    #[ORM\Column(type: 'date', nullable: true)]
-    private $dateVendeur;
-
-    #[ORM\Column(type: 'string', length: 150)]
-    private $libDocument;
 
 
     public function getId(): ?int
@@ -59,63 +46,29 @@ class DocumentSigne
         return $this;
     }
 
-    public function getFichier(): ?FichierAdmin
+    public function getDateSignature(): ?\DateTimeInterface
     {
-        return $this->fichier;
+        return $this->dateSignature;
     }
 
-    public function setFichier(?FichierAdmin $fichier): self
+    public function setDateSignature(\DateTimeInterface $dateSignature): static
     {
-        $this->fichier = $fichier;
+        $this->dateSignature = $dateSignature;
 
         return $this;
     }
 
-    public function getDocument(): ?DocumentTypeActe
+    public function getClient(): ?CLient
     {
-        return $this->document;
+        return $this->client;
     }
 
-    public function setDocument(?DocumentTypeActe $document): self
+    public function setClient(?CLient $client): static
     {
-        $this->document = $document;
+        $this->client = $client;
 
         return $this;
     }
 
-    public function getDateAcheteur(): ?\DateTimeInterface
-    {
-        return $this->dateAcheteur;
-    }
-
-    public function setDateAcheteur(?\DateTimeInterface $dateAcheteur): self
-    {
-        $this->dateAcheteur = $dateAcheteur;
-
-        return $this;
-    }
-
-    public function getDateVendeur(): ?\DateTimeInterface
-    {
-        return $this->dateVendeur;
-    }
-
-    public function setDateVendeur(?\DateTimeInterface $dateVendeur): self
-    {
-        $this->dateVendeur = $dateVendeur;
-
-        return $this;
-    }
-
-    public function getLibDocument(): ?string
-    {
-        return $this->libDocument;
-    }
-
-    public function setLibDocument(string $libDocument): self
-    {
-        $this->libDocument = $libDocument;
-
-        return $this;
-    }
+    
 }

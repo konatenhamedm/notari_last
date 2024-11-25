@@ -35,8 +35,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Controller\BaseController;
+use App\Entity\Compte;
+use App\Entity\DocumentSigne;
+use App\Entity\DocumentSigneFichier;
 use App\Entity\RemiseActe;
 use App\Form\DossierType;
+use App\Repository\DocumentClientRepository;
 use App\Repository\DocumentTypeActeRepository;
 use App\Repository\DossierWorkflowRepository;
 use App\Repository\TypeRepository;
@@ -329,11 +333,14 @@ et indication du nombre des rôles, mots et chiffres nuls
         $permission = $this->menu->getPermissionIfDifferentNull($this->security->getUser()->getGroupe()->getId(), self::INDEX_ROOT_NAME);
 
         $table = $dataTableFactory->create()
-            ->add('numeroOuverture', TextColumn::class, ['label' => 'Numéro ouverture'])
-            ->add('numeroRepertoire', TextColumn::class, ['label' => 'Numéro repertoire'])
+            ->add('numeroOuverture', TextColumn::class, ['label' => 'N° ouverture'])
+            ->add('numeroRepertoire', TextColumn::class, ['label' => 'N° repertoire'])
             ->add('objet', TextColumn::class, ['label' => 'Objet'])
+            ->add('typeActe', TextColumn::class, ['label' => 'Type d\'acte', 'field' => 't.titre'])
+   /*          ->add('employe', TextColumn::class, ['label' => 'Cler en charge', 'field' => 'emp.nom'])
+ */
             ->add('dateCreation', DateTimeColumn::class,  ['label' => 'Date création', 'format' => 'd/m/Y', 'searchable' => false])
-            ->add('etape', TextColumn::class, ['className' => 'w-100px', 'field' => 'l.id', 'label' => 'Etat', 'render' => function ($value, Dossier $context) {
+            ->add('etape', TextColumn::class, ['className' => 'w-100px', 'field' => 'l.id', 'label' => 'Etape', 'render' => function ($value, Dossier $context) {
 
 
                 return $context->getEtape() == '' ? 'Non entamer' : $context->getEtape();
@@ -341,11 +348,14 @@ et indication du nombre des rôles, mots et chiffres nuls
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Dossier::class,
                 'query' => function (QueryBuilder $qb) use ($etat) {
-                    $qb->select(['p'])
+                    $qb->select(['p','t'])
                         ->from(Dossier::class, 'p')
                         ->join('p.entreprise', 'en')
-                        ->orderBy('p.id ', 'DESC');
+                       /*  ->join('p.employe', 'emp') */
+                        ->innerJoin('p.typeActe', 't')
 
+                        ->orderBy('p.id ', 'DESC');
+                     
 
                     if ($etat == 'termine') {
                         $qb->andWhere("JSON_CONTAINS(p.etat, '1', '$.termine') = 1");
@@ -742,23 +752,18 @@ et indication du nombre des rôles, mots et chiffres nuls
         FormError $formError,
         WorkflowRepository $workflowRepository,
         DossierWorkflowRepository $dossierWorkflowRepository,
-        FichierRepository $fichierRepository
+        FichierRepository $fichierRepository,
+        DocumentClientRepository $documentClientRepository
     ) {
 
 
         $typeActe = $dossier->getTypeActe();
         //$documents =  $documentTypeActeRepository->getDocumentsEtape($typeActe, 'piece');
 
-        if ($dossier->getMontantAcheteur() == null) {
-            $dossier->setMontantAcheteur('0');
-        }
-        if ($dossier->getMontantVendeur() == null) {
-            $dossier->setMontantVendeur('0');
-        }
+       /* dd($dossier->getPieces()); */
         $identification = $dossier->getIdentifications()->first();
 
-        $acheteur = $identification->getAcheteur();
-        $vendeur = $identification->getVendeur();
+      
 
         $prefixe = $typeActe->getCode();
         $currentRoute = $request->attributes->get('_route');
@@ -768,57 +773,31 @@ et indication du nombre des rôles, mots et chiffres nuls
         $oldPieces = $dossier->getPieces();
 
 
-        $docAcheteurs = $acheteur->getDocuments();
-        $docVendeurs = $vendeur->getDocuments();
 
-        // dd($docAcheteurs);
-
-
-        foreach ($docAcheteurs as $document) {
-
-            $hasDoc = $oldPieces->filter(function (Piece $piece) use ($document) {
-                return $piece->getOrigine() == Piece::ORIGINE_ACHETEUR && $piece->getLibDocument() == $document->getLibelle() && $piece->getClient();
-            })->first();
-
-
-
-            if (!$hasDoc) {
-                $fichier = $fichierRepository->find($document->getFichier()->getId());
+         if (!$dossier->getPieces()->count()) {
+          
+          /*   foreach ($dossier->getIdentifications() as $key => $value) {
                 $piece = new Piece();
-
-                $piece->setDocument($document->getDocument());
-                $piece->setLibDocument($document->getLibelle());
-                $piece->setFichier($fichier);
-                $piece->setOrigine(Piece::ORIGINE_ACHETEUR);
+                $piece->setAttribut($value->getAttribut());
+                $piece->setClient($value->getClients());
                 $dossier->addPiece($piece);
-                $piece->setClient(true);
+            } */
+
+            foreach ($dossier->getIdentifications() as $key => $value) {
+                foreach ($documentClientRepository->findBy(['client'=>$value->getClients()]) as $key => $doc) {
+                    $piece = new Piece();
+                    $piece->setAttribut($value->getAttribut());
+                    $piece->setClient($value->getClients());
+                    $piece->setPath($doc->getFichier());
+                    $dossier->addPiece($piece);
+                }
+                
             }
-        }
+
+        } 
 
 
-        foreach ($docVendeurs as $document) {
-
-
-            $hasDoc = $oldPieces->filter(function (Piece $piece) use ($document) {
-                return $piece->getOrigine() == Piece::ORIGINE_VENDEUR  &&
-                    $piece->getLibDocument() == $document->getLibelle() &&
-                    $piece->getClient();
-            })->first();
-
-            if (!$hasDoc) {
-                $fichier = $fichierRepository->find($document->getFichier()->getId());
-                $piece = new Piece();
-                $piece->setFichier($fichier);
-                //if ($document->getDocument())
-                $piece->setDocument($document->getDocument());
-                $piece->setLibDocument($document->getLibelle());
-                $piece->setOrigine(Piece::ORIGINE_VENDEUR);
-                $piece->setClient(true);
-                $dossier->addPiece($piece);
-            }
-        }
-
-
+        /* dd($dossier->getPieces()); */
 
 
 
@@ -849,31 +828,31 @@ et indication du nombre des rôles, mots et chiffres nuls
         $isAjax = $request->isXmlHttpRequest();
 
         if ($form->isSubmitted()) {
+          
 
             $response = [];
             $redirect = $this->generateUrl($currentRoute, $urlParams);
             $isNext = $form->has('next') && $form->get('next')->isClicked();
 
-            $montantVendeur = (int)$form->get('montantAcheteur')->getData();
-            $montantAcheteur = (int)$form->get('montantVendeur')->getData();
-
-            $somme = $montantAcheteur + $montantVendeur;
+           
 
             //dd($somme, str_replace(' ', '', $dossier->getMontantTotal()));
 
 
             if ($form->isValid()) {
 
-                if ($somme != str_replace(' ', '', $dossier->getMontantTotal())) {
+               /*  if ($somme != str_replace(' ', '', $dossier->getMontantTotal())) {
                     $statut = 0;
-                    $message       = sprintf('La somme total des montant vendeur %s et acheteur %s est different du montant total est %s', $montantVendeur, $montantAcheteur, $dossier->getMontantTotal());
-                } else {
+                    $message       = sprintf('La somme total des montants %s doit être egal au montant honorais %s ', $somme, $dossier->getMontantTotal());
+                } else { */
                     $message       = 'Opération effectuée avec succès';
                     $statut = 1;
                     $suiviDossierRepository = $em->getRepository(SuiviDossierWorkflow::class);
                     $dossierWorkflow = $dossierWorkflowRepository->findOneBy(['dossier' => $dossier, 'workflow' => $current]);
 
                     $suivi = $suiviDossierRepository->findOneBy(compact('dossierWorkflow'));
+
+                    
 
                     if (!$suivi) {
                         $date = new \DateTime();
@@ -905,8 +884,8 @@ et indication du nombre des rôles, mots et chiffres nuls
                     $em->persist($suivi);
                     $em->persist($dossier);
                     $em->flush();
-                }
-
+               /*  }
+ */
                 $modal = false;
                 $data = null;
 
@@ -934,7 +913,8 @@ et indication du nombre des rôles, mots et chiffres nuls
         return $this->render("actes/dossier/{$prefixe}/{$routeWithoutPrefix}.html.twig",  [
             'dossier' => $dossier,
             'route_without_prefix' => $routeWithoutPrefix,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'montant'=> $dossier->getMontantTotal(),
         ]);
     }
 
@@ -1335,6 +1315,25 @@ et indication du nombre des rôles, mots et chiffres nuls
         $current = $workflowRepository->findOneBy(['typeActe' => $typeActe, 'route' => $routeWithoutPrefix]);
 
 
+        if(!$dossier->getDocumentSignes()->count()){
+            foreach ($dossier->getIdentifications() as $key => $value) {
+            $documentSigne = new DocumentSigne();
+            $documentSigne->setClient($value->getClients());
+
+            $dossier->addDocumentSigne($documentSigne);
+            
+            }
+        }
+        if(!$dossier->getDocumentSigneFichiers()->count()){
+            
+            $documentSigneFichier = new DocumentSigneFichier();
+            $documentSigneFichier->setFichier(null);
+
+            $dossier->addDocumentSigneFichier($documentSigneFichier);
+            
+          
+        }
+       
 
         $urlParams = ['id' => $dossier->getId()];
 
@@ -1585,7 +1584,8 @@ et indication du nombre des rôles, mots et chiffres nuls
         EntityManagerInterface $em,
         FormError $formError,
         WorkflowRepository $workflowRepository,
-        DossierWorkflowRepository $dossierWorkflowRepository
+        DossierWorkflowRepository $dossierWorkflowRepository,
+        DocumentClientRepository $documentClientRepository
     ) {
         $typeActe = $dossier->getTypeActe();
         $prefixe = $typeActe->getCode();
@@ -1594,10 +1594,42 @@ et indication du nombre des rôles, mots et chiffres nuls
 
 
         $current = $workflowRepository->findOneBy(['typeActe' => $typeActe, 'route' => $routeWithoutPrefix]);
-
+       
         $oldEnregistrements = $dossier->getPaiementFrais();
+        
+       
         $ii = 1;
-        foreach (PaiementFrais::Sens as $idSens => $value) {
+
+
+        if (!$dossier->getPaiementFrais()->count()) {
+          
+            foreach ($dossier->getIdentifications() as $key => $value) {
+
+                $paiement = new PaiementFrais();
+                $paiement->setAttribut($value->getAttribut());
+                $paiement->setClient($value->getClients());
+                $dossier->addPaiementFrai($paiement);
+            }
+
+        } 
+
+
+
+      /*   if (!$oldEnregistrements->count()) {
+
+            foreach ($dossier->getPieces() as $key => $value) {
+               
+                $enregistrement = new PaiementFrais();
+                $enregistrement->setClient($value->getClient());
+                $dossier->addPaiementFrai($enregistrement);
+            }
+          
+        } */
+        /*  $enregistrement->setSens(intval($idSens)); */
+         
+
+
+     /*    foreach (PaiementFrais::Sens as $idSens => $value) {
             $hasValue = $oldEnregistrements->filter(function (PaiementFrais $enregistrement) use ($idSens) {
                 return $enregistrement->getSens() == $idSens;
             })->current();
@@ -1609,9 +1641,9 @@ et indication du nombre des rôles, mots et chiffres nuls
                 $enregistrement->setSens(intval($idSens));
                 $dossier->addPaiementFrai($enregistrement);
             }
-        }
+        } */
 
-
+       /*  dd($oldEnregistrements); */
         $urlParams = ['id' => $dossier->getId()];
 
 
@@ -1641,6 +1673,14 @@ et indication du nombre des rôles, mots et chiffres nuls
 
         if ($form->isSubmitted()) {
 
+            $somme = 0;
+            $datas = $form->get("paiementFrais")->getData();
+
+            foreach ($datas as $key => $value) {
+                $somme = $somme + $value->getMontant();
+            }
+
+
             $response = [];
             $redirect = $this->generateUrl($currentRoute, $urlParams);
             $isNext = $form->has('next') && $form->get('next')->isClicked();
@@ -1649,23 +1689,37 @@ et indication du nombre des rôles, mots et chiffres nuls
 
 
 
-            $resiltat = $dataLigne->filter(function (PaiementFrais $enregistrement) use ($dossier) {
+          /*   $resiltat = $dataLigne->filter(function (PaiementFrais $enregistrement) use ($dossier) {
                 return $enregistrement->getSens() == 2;
-            });
+            }); */
 
             //dd($resiltat[1]->getMontant(), $resiltat[1]->getDate(), $resiltat[1]->getPath());
 
             if ($form->isValid()) {
 
 
-                if ($resiltat[1]->getMontant() == null || $resiltat[1]->getDate() == null ||  $resiltat[1]->getPath() == null) {
+                if ($somme != str_replace(' ', '', $dossier->getMontantTotal())) {
                     $statut = 0;
-                    $message       = sprintf('Vous devez renseigner toute les information de la ligne arrivée');
-                } else {
+                    $message       = sprintf('La somme total des montants %s doit être egal au montant honorais %s ', $somme, $dossier->getMontantTotal());
+                } else { 
                     $suiviDossierRepository = $em->getRepository(SuiviDossierWorkflow::class);
                     $dossierWorkflow = $dossierWorkflowRepository->findOneBy(['dossier' => $dossier, 'workflow' => $current]);
 
                     $suivi = $suiviDossierRepository->findOneBy(compact('dossierWorkflow'));
+
+                    foreach ($datas as $key => $value) {
+
+                        if($value->getMontant() > 0){
+                              $compte = new Compte();
+                        $compte->setClient($value->getClient());
+                        $compte->setDossier($dossier);
+                        $compte->setMontant($value->getMontant());
+                        $em->persist($compte);
+                        $em->flush();
+                        }
+                      
+                    }
+                    
 
                     if (!$suivi) {
                         $date = new \DateTime();
@@ -1727,7 +1781,8 @@ et indication du nombre des rôles, mots et chiffres nuls
         return $this->render("actes/dossier/{$prefixe}/{$routeWithoutPrefix}.html.twig",  [
             'dossier' => $dossier,
             'route_without_prefix' => $routeWithoutPrefix,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'montant'=> $dossier->getMontantTotal(),
         ]);
     }
 

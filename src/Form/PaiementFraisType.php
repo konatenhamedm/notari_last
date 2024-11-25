@@ -2,7 +2,10 @@
 
 namespace App\Form;
 
+use App\Entity\Client;
 use App\Entity\PaiementFrais;
+use App\Form\DataTransformer\ThousandNumberTransformer;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -16,6 +19,12 @@ class PaiementFraisType extends AbstractType
     {
         $builder
 
+        ->add('client', EntityType::class, [
+            'label' => false,
+            'class' => Client::class,
+            'choice_label' => 'nom',
+            'attr' => ['class' => 'form-control has-select2']
+        ])
             ->add(
                 'montant',
                 TextType::class,
@@ -26,16 +35,18 @@ class PaiementFraisType extends AbstractType
                     'attr' => ['class' => 'input-money input-mnt'], 'empty_data' => '0',
                 ]
             )
-            ->add('path', FichierType::class, ['label' => false,  'doc_options' => $options['doc_options'], 'required' => $options['doc_required'] ?? true])
-            ->add('date', DateType::class, [
+            ->add('attribut', TextType::class, ['label' => 'Attribut', 'label' => false, 'required' => false]);
+          /*   ->add('path', FichierType::class, ['label' => false,  'doc_options' => $options['doc_options'], 'required' => $options['doc_required'] ?? true]) */
+           /*  ->add('date', DateType::class, [
                 'label' => false, 'html5' => false,
                 'attr' => ['class' => 'no-auto skip-init has-datepicker'],
                 'widget' => 'single_text',
                 'format' => 'dd/MM/yyyy', 'empty_data' => '',
                 'required' => false
-            ])
+            ]) */
 
-            ->add('sens', ChoiceType::class, ['choices' => array_flip(PaiementFrais::Sens), 'attr' => ['class' => 'sens']]);
+        ;
+        $builder->get('montant')->addModelTransformer(new ThousandNumberTransformer());
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -10,7 +10,7 @@
                 {{ form_start(form, {'attr': {'role':'form', 'class': 'form', 'id': route_without_prefix}}) }}
                      <div id="prototype" data-prototype="{{ redaction(form.redactions.vars.prototype, 1)|e }}"></div>
                     {{ include('_includes/ajax/response.html.twig') }}
-                    <h3 style="color: orangered">Redaction</h3>
+                    <h3 style="color: orangered">Rédaction de l’acte et gestion des versions</h3>
                     <button type="button" class="add-document btn btn-sm btn-info mb-4" data-container=".doc-list">Ajouter une version</button>
                      <div class="list-red">
                         {% for redaction in form.redactions %}

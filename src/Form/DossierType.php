@@ -115,6 +115,20 @@ class DossierType extends AbstractType
                 'prototype' => true,
 
             ]);
+            $builder->add('documentSigneFichiers', CollectionType::class, [
+                'entry_type' => DocumentSigneFichierType::class,
+                'entry_options' => [
+                    'label' => false,
+                    'doc_options' => $options['doc_options'],
+                    'doc_required' => $options['doc_required']
+                ],
+                'allow_add' => true,
+                'label' => false,
+                'by_reference' => false,
+                'allow_delete' => true,
+                'prototype' => true,
+
+            ]);
         }
 
 
@@ -219,21 +233,9 @@ class DossierType extends AbstractType
                 'by_reference' => false,
                 'allow_delete' => true,
                 'prototype' => true,
-            ])->add(
-                'montantAcheteur',
-                TextType::class,
-
-
-                ['label' => 'Montant à payer acheteur', 'attr' => ['class' => 'input-money input-mnt acheteur-input'], 'empty_data' => '0',]
-            )
-                ->add(
-                    'montantVendeur',
-                    TextType::class,
-
-                    ['label' => 'Montant à payer vendeur', 'attr' => ['class' => 'input-money input-mnt vendeur-input'], 'empty_data' => '0',]
-                );
-            $builder->get('montantAcheteur')->addModelTransformer(new ThousandNumberTransformer());
-            $builder->get('montantVendeur')->addModelTransformer(new ThousandNumberTransformer());
+            ]);
+           
+            
         }
 
 

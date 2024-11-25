@@ -75,25 +75,35 @@
 
 
 {% macro document_signe(document) %}
-    <div class="row row-container">
-        <div style="display:none">{{ form_row(document.document) }}</div>
-        <div class="col-md-3">{{ form_row(document.libDocument) }}</div>
-        <div class="col-md-3">{{ form_row(document.fichier) }}</div>
-        <div class="col-md-2">{{ form_row(document.dateAcheteur) }}</div>
-        <div class="col-md-2">{{ form_row(document.dateVendeur) }}</div>
+<tr class=" row-container even pointer table-light">
+    <td class="p-2">
+        <div class="">{{ form_row(document.client,{'attr':{'readOnly':'readOnly'}}) }}</div>
        
-        <div class="col-md-1 ">
-             {% if document.vars.value %}
-              {# <a class="btn btn-dark btn-sm" target="_blank" href="{{ path('fichier_index', {id:  document.vars.value.fichier.id}) }}" download> <i class="bi bi-upload"></i>
-                </a> #}
-                 <a class="btn btn-dark btn-sm" target="_blank" href="{{ asset('uploads/media_entreprise/' ~ document.vars.value.fichier.alt) }} " download> <i class="bi bi-upload"></i>
-                </a>
-                {% endif %}
-        </div>
-        
-        <div class="col-md-1 del-col">
+    </td>
+    <td class="p-2">
+        <div class="">{{ form_row(document.dateSignature) }}</div>
+       
+    </td>
+    {# <td class="p-2">
+       
+       
+    </td> #}
+</tr>
 
-        </div>
+  
+{% endmacro %}
+
+{% macro document_signe_fichier(document) %}
+    <div class="row row-container">
+
+        <div class="col-md-4">{{ form_row(document.fichier) }}</div>
+        <div class="col-md-2">{% if document.children.fichier.vars.data %}
+              
+            
+                 <a class="btn btn-dark btn-sm" style="margin-top: 20px;" target="_blank" href="{{ asset('uploads/media_entreprise/' ~ document.vars.value.fichier.alt) }} " download> <i class="bi bi-upload"></i>
+                </a>
+             {% endif %}</div>
+        
     </div>
 {% endmacro %}
 
@@ -125,15 +135,15 @@
     {% set value = frais.vars.value %}
     
     <div class="row row-container">
-        <div class="col-md-1">{% if frais.vars.id == "dossier_paiementFrais_0" %}
+        {# <div class="col-md-1">{% if frais.vars.id == "dossier_paiementFrais_0" %}
             {{ constant('App\\Entity\\PaiementFrais::Sens')[1] }} 
         {% else %}
             {{ constant('App\\Entity\\PaiementFrais::Sens')[2] }} 
-        {% endif %} </div>
-        <div style="display:none">{{ form_row(frais.sens) }}</div>
+        {% endif %} </div> #}
+        <div class="col-md-2" style="display:">{{ form_row(frais.client,{'attr':{'readOnly':'readOnly'}}) }}</div>
         <div class="col-md-2">{{ form_row(frais.date) }}</div>
-        <div class="col-md-3">{{ form_row(frais.montant) }}</div>
-        <div class="col-md-4">{{ form_row(frais.path) }}</div>
+        <div class="col-md-2">{{ form_row(frais.montant) }}</div>
+        <div class="col-md-3">{{ form_row(frais.path) }}</div>
         
         <div class="col-md-1 ">
             {% if value and  value.path %}

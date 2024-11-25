@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Client;
 use App\Entity\DocumentSigne;
 use App\Entity\DocumentTypeActe;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -20,17 +21,14 @@ class DocumentSigneType extends AbstractType
     {
         $builder
           
-            ->add('document', EntityType::class, [
-                'required' => false,
-                'label' => false,
-                'class' => DocumentTypeActe::class,
-                'placeholder' => '---',
-                'choice_label' => 'libelle',
-                'attr'=>['class' =>'form-control has-select2']
-            ])
-            ->add('libDocument', null, ['label' => false, 'empty_data' => '', 'attr' => ['class' => 'lib-document']])
-            ->add('fichier', FichierType::class, ['label' => false, 'doc_options' => $options['doc_options'], 'required' => $options['doc_required'] ?? true])
-            ->add('dateAcheteur', DateType::class, [
+        
+        ->add('client', EntityType::class, [
+            'label' => false,
+            'class' => Client::class,
+            'choice_label' => 'nom',
+            'attr' => ['class' => 'form-control has-select2']
+        ])
+        ->add('dateSignature', DateType::class, [
                 'label' => false
                 , 'html5' => false
                 , 'attr' => ['class' => 'has-datepicker no-auto skip-init', 'autocomplete' => 'off']
@@ -38,15 +36,7 @@ class DocumentSigneType extends AbstractType
                 , 'format' => 'dd/MM/yyyy'
                 , 'empty_data' => date('d/m/Y')
             ])
-            ->add('dateVendeur', DateType::class, [
-                'label' => false
-                , 'html5' => false
-                , 'attr' => ['class' => 'has-datepicker no-auto skip-init', 'autocomplete' => 'off']
-                , 'widget' => 'single_text'
-                , 'format' => 'dd/MM/yyyy'
-                , 'empty_data' => date('d/m/Y')
-            ])
-           /* ->add('dossier')*/
+            
         ;
     }
 

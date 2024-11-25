@@ -124,6 +124,12 @@ class Dossier
     #[Gedmo\Blameable(on: 'create')]
     private ?Utilisateur $utilisateur = null;
 
+    #[ORM\OneToMany(mappedBy: 'dossier', targetEntity: Compte::class)]
+    private Collection $comptes;
+
+    #[ORM\OneToMany(mappedBy: 'dossier', targetEntity: DocumentSigneFichier::class, cascade: ['persist', 'remove'])]
+    private Collection $documentSigneFichiers;
+
     public function __construct()
     {
         $this->calendars = new ArrayCollection();
@@ -142,6 +148,8 @@ class Dossier
         $this->setMontantVendeur(0);
         $this->paiementFrais = new ArrayCollection();
         $this->dateCreation = new DateTime();
+        $this->comptes = new ArrayCollection();
+        $this->documentSigneFichiers = new ArrayCollection();
     }
 
 
@@ -780,6 +788,66 @@ class Dossier
     public function setUtilisateur(?Utilisateur $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Compte>
+     */
+    public function getComptes(): Collection
+    {
+        return $this->comptes;
+    }
+
+    public function addCompte(Compte $compte): static
+    {
+        if (!$this->comptes->contains($compte)) {
+            $this->comptes->add($compte);
+            $compte->setDossier($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompte(Compte $compte): static
+    {
+        if ($this->comptes->removeElement($compte)) {
+            // set the owning side to null (unless already changed)
+            if ($compte->getDossier() === $this) {
+                $compte->setDossier(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DocumentSigneFichier>
+     */
+    public function getDocumentSigneFichiers(): Collection
+    {
+        return $this->documentSigneFichiers;
+    }
+
+    public function addDocumentSigneFichier(DocumentSigneFichier $documentSigneFichier): static
+    {
+        if (!$this->documentSigneFichiers->contains($documentSigneFichier)) {
+            $this->documentSigneFichiers->add($documentSigneFichier);
+            $documentSigneFichier->setDossier($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocumentSigneFichier(DocumentSigneFichier $documentSigneFichier): static
+    {
+        if ($this->documentSigneFichiers->removeElement($documentSigneFichier)) {
+            // set the owning side to null (unless already changed)
+            if ($documentSigneFichier->getDossier() === $this) {
+                $documentSigneFichier->setDossier(null);
+            }
+        }
 
         return $this;
     }

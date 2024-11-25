@@ -3,31 +3,49 @@
 {% form_theme form 'widget/fields-block.html.twig' %}
 
 {% from '_admin/macros/acte_vente.html.twig' import document_signe %}
+{% from '_admin/macros/acte_vente.html.twig' import document_signe_fichier %}
  <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-body form-card">
                 {{ form_start(form, {'attr': {'role':'form', 'class': 'form', 'id': route_without_prefix}}) }}
                     <div id="prototype" data-prototype="{{ document_signe(form.documentSignes.vars.prototype, 1)|e }}"></div>
+                    <div id="prototype" data-prototype="{{ document_signe_fichier(form.documentSigneFichiers.vars.prototype, 1)|e }}"></div>
                     {{ include('_includes/ajax/response.html.twig') }}
-                    <h3 style="color: orangered">Documents Signés</h3>
-                    <button type="button" class="add-document btn btn-sm btn-info mb-4" data-container=".doc-list">Ajouter un document</button>
-                        <div class="row">
-                           <div class="col-md-3">Doc</div>
-                            <div class="col-md-3">Fichier</div>
-                            <div class="col-md-2">D. Sign. Ach.</div>
-                            <div class="col-md-2">D. Sign. V.</div>
-                            
-                           
-                            <div class="col-md-2">
-
-                            </div>
-                        </div>
-                    <div class="doc-list">
-                    {% for document in form.documentSignes %}
-                        {{ document_signe(document)}}
+                    <h3 style="color: orangered">6. Gestion des signatures et archivage de l’acte parafé</h3>
+                   
+                   <br>
+                     <div class="doc-list">
+                    {% for documentFichier in form.documentSigneFichiers %}
+                        {{ document_signe_fichier(documentFichier)}}
                     {% endfor %}
                     </div>
+                   <br>
+                        
+
+                    <table class="table table-bordered table-custom">
+                        <thead class="thead-dark">
+
+                            <tr>
+                                <th width="60%" class="p-2">Client</th>
+                                <th width="40%" class="p-2">Date Signature</th>
+                               
+                               {#  <th width="10%" class="p-2"></th> #}
+                            </tr>
+                        </thead>
+                    
+
+                        
+                        <tbody class="column-container proto-container doc-list" data-childclass="">
+                              {% for document in form.documentSignes %}
+                                {{ document_signe(document)}}
+                             {% endfor %}
+                    </tbody>
+                    
+                        </table>
+
+
+                  
                     <div class="row">
                         <div class="col-xl-12">
                             <div class="text-right">
