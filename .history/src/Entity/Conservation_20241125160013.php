@@ -20,7 +20,7 @@ class Conservation
 
     #[ORM\Column(type: 'string', length: 255)]
     private $libelle;
-
+    
     #[ORM\Column(type: 'string', length: 255)]
     private $contact;
 
@@ -60,30 +60,6 @@ class Conservation
     public function setLibelle(string $libelle): self
     {
         $this->libelle = $libelle;
-
-        return $this;
-    }
-    public function getContact(): ?string
-    {
-        return $this->contact;
-    }
-
-    public function setContact(string $contact): self
-    {
-        $this->contact = $contact;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
 
         return $this;
     }

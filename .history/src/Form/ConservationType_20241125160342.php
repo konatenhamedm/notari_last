@@ -15,7 +15,7 @@ class ConservationType extends AbstractType
             ->add('code')
             ->add('libelle')
             ->add('contact')
-            ->add('email')
+            ->add('email');
             ;
     }
 

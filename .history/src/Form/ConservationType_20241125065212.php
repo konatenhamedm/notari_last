@@ -13,10 +13,7 @@ class ConservationType extends AbstractType
     {
         $builder
             ->add('code')
-            ->add('libelle')
-            ->add('contact')
-            ->add('email')
-            ;
+            ->add('libelle');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

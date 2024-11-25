@@ -34,8 +34,6 @@ class ConservationController extends BaseController
         $table = $dataTableFactory->create()
             ->add('code', TextColumn::class, ['label' => 'Code'])
             ->add('libelle', TextColumn::class, ['label' => 'Libelle'])
-            ->add('contact', TextColumn::class, ['label' => 'Contact'])
-            ->add('email', TextColumn::class, ['label' => 'Email'])
             ->createAdapter(ORMAdapter::class, [
                 'entity' => Conservation::class,
             ])
