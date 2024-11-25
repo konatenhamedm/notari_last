@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Calendar;
+use App\Entity\Client;
 use App\Entity\Dossier;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
@@ -24,11 +25,7 @@ class CalendarType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title', TextType::class, [
-                'required' => false,
-                'label' => 'Libellé activité',
-
-            ])
+            ->add('title')
             ->add('dossier', EntityType::class, [
                 'required' => false,
                 'class' => Dossier::class,
@@ -38,10 +35,12 @@ class CalendarType extends AbstractType
                         // ->setParameter('val', 1)
                         ->orderBy('u.id', 'DESC');
                 },
-                'label' => 'Réceptionné par',
-                'placeholder' => "Selectionner le client",
-                'choice_label' => "objet",
-               
+                'label' => 'Acte conserné',
+                'placeholder' => "Selectionner l'acte",
+                'choice_label' => function ($dossier) {
+                 
+                        return 'Dossier N°' . $dossier->getNumeroOuverture() ;
+                },
                 'attr' => ['class' => 'form-control has-select2', 'id' => 'validationCustom05']
 
             ])

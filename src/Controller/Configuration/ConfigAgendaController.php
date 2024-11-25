@@ -36,15 +36,15 @@ class ConfigAgendaController extends BaseController
              $redirect = $this->generateUrl('app_default');
              return $this->redirect($redirect);
              //dd($this->menu->getPermission());
-         }*/
+         } */
         $modules = [
             [
-                'label' => 'Activités à venir',
+                'label' => 'Les activités à venir',
                 'icon' => 'bi bi-list',
                 'href' => $this->generateUrl('app_agenda_calendar_index', ['etat' => 'prochain'])
             ],
             [
-                'label' => 'Activités à passés',
+                'label' => 'Les activités passées',
                 'icon' => 'bi bi-users',
                 'href' => $this->generateUrl('app_agenda_calendar_index', ['etat' => 'passe'])
             ]

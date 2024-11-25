@@ -180,11 +180,12 @@ class CalendarController extends BaseController
         $statutCode = Response::HTTP_OK;
 
         $isAjax = $request->isXmlHttpRequest();
-
+        // dd($form->getData());
         if ($form->isSubmitted()) {
+          
             $response = [];
             $redirect = $this->generateUrl('app_config_parametre_agenda_index');
-            // $email = "";
+            //$email = "";
             // if ($form->getData()->getClient()->getRaisonSocial() == "") {
             //     $email = $form->getData()->getClient()->getEmail();
             // } else {
@@ -201,7 +202,7 @@ class CalendarController extends BaseController
             //     $identite = $form->getData()->getClient()->getRaisonSocial();
             // }
 
-            // $objet = $form->getData()->getDescription();
+            //$objet = $form->getData()->getDescription();
             if ($form->isValid()) {
                 /*     $mailerService->send(
                     'INFORMATION CONCERNANT LE RENDEZ-VOUS',
@@ -223,7 +224,7 @@ class CalendarController extends BaseController
                 $calendar->setEntreprise($this->entreprise);
                 $entityManager->persist($calendar);
                 $entityManager->flush();
-
+// 
                 $data = true;
                 $message = 'Opération effectuée avec succès';
                 $statut = 1;

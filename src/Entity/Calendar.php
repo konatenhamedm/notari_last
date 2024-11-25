@@ -43,9 +43,7 @@ class Calendar
     #[ORM\ManyToOne(targetEntity: Dossier::class, inversedBy: 'calendars')]
     private $dossier;
 
-    #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'calendars')]
-    private $client;
-
+ 
     #[ORM\ManyToOne(inversedBy: 'calendars')]
     private ?Entreprise $entreprise = null;
 
@@ -187,15 +185,5 @@ class Calendar
         return $this;
     }
 
-    public function getClient(): ?Client
-    {
-        return $this->client;
-    }
-
-    public function setClient(?Client $client): self
-    {
-        $this->client = $client;
-
-        return $this;
-    }
+  
 }

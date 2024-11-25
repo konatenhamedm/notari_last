@@ -49,7 +49,7 @@ class ConfigDossierController extends BaseController
                 'href' => $this->generateUrl('app_actes_dossier_index', ['etat' => 'termine'])
             ],
             [
-                'label' => 'Archivés',
+                'label' => 'Archives',
                 'icon' => 'bi bi-users',
                 'href' => $this->generateUrl('app_dossier_archive_index')
             ]
