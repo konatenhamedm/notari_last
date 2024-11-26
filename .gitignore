@@ -59,6 +59,8 @@ settings.json
 /public/uploads/
 /var/
 /vendor/
+/.history/
+
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
