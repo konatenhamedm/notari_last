@@ -223,11 +223,7 @@
         {% endif %}
         <div class="col-md-7">{{ form_row(remiseActe.fichier, file_attrs) }}</div>
         {% if has_file %}
-        <div class="col-md-12">
-            <div style="display:none" class="field-matiere">
-                {{ form_widget(remiseActe.commentaire) }}
-            </div>
-        </div>
+        
         <div class="col-md-1">
             {#  <a class="btn btn-dark btn-sm" target="_blank" href="{{ path('fichier_index', {id:  remiseActe.vars.value.fichier.id}) }}" download> <i class="bi bi-upload"></i>
                 </a> #}
