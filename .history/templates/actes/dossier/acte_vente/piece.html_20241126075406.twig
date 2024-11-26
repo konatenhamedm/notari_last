@@ -1,0 +1,125 @@
+{% block page_content %}
+{% form_theme form 'widget/fields-block.html.twig' %}
+{% from '_macros/piece.html.twig' import prototype_piece %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body form-card">
+                {{ form_start(form, {'attr': {'role': 'form', 'class': 'form', 'id': route_without_prefix}}) }}
+                {{ include('_includes/ajax/response.html.twig') }}
+                
+                <h3 style="color: orangered">Vérification des pièces</h3>
+                <br>
+                
+                <div class="panel panel-primary">
+                    <div class="tab-menu-heading">
+                        <div class="tabs-menu">
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                {% for attribut in dossier.attribut %}
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="{{ attribut.id }}-tab" data-bs-toggle="tab" data-bs-target="#{{ attribut.id }}" type="button" role="tab" aria-controls="{{ attribut.id }}" aria-selected="true">
+                                            {{ attribut.libelle }}
+                                        </button>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="panel-body tabs-menu-body">
+                        <div class="tab-content" id="myTabContent">
+                            {% for attribut in colunne.attribut %}
+                                <div class="tab-pane fade" id="{{ attribut.id }}" role="tabpanel" aria-labelledby="{{ attribut.id }}-tab">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            {{ form_row(form[attribut.id]) }}
+                                        </div>
+                                    </div>
+                                    
+                                    <button type="button" data-origine="1" class="add-piece btn btn-sm btn-info" data-container=".{{ attribut.id }}-container">
+                                        Ajouter une pièce
+                                    </button>
+                                    
+                                    <div class="{{ attribut.id }}-container">
+                                        {{ prototype_piece(form) }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <br>
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="text-right">
+                            {{ form_widget(form.save) }}
+                            {% if form.next is defined %}
+                                {{ form_widget(form.next) }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    // Calcul du total
+    function getTotal() {
+        let total = 0;
+        $("#exampleModalSizeSm2").find('.input-mnt').each(function () {
+            const $this = $(this);
+            total += parseInt($this.val().replaceAll(' ', '')) || 0;
+        });
+        $("#exampleModalSizeSm2").find('.col-total').html(total);
+    }
+
+    $(function () {
+        // Initialisation des champs et calcul du total
+        init_select2(null, null, '.form-card');
+        getTotal();
+
+        // Ajout dynamique des lignes
+        const $container = $('.proto-container');
+        let index = $container.find('.row-colonne').length;
+
+        // Ajouter une ligne
+        function addLine($container, name, proto_class) {
+            const $prototype = $($(proto_class).attr('data-prototype')
+                .replace(/__name__label__/g, `Colonne ${index + 1}`)
+                .replace(/__name__/g, index));
+
+            init_select2($prototype.find('select'), null, '#exampleModalSizeSm2');
+            addDeleteLink($prototype);
+            $container.append($prototype);
+            index++;
+        }
+
+        // Ajouter un lien de suppression
+        function addDeleteLink($prototype) {
+            const $deleteLink = $('<a href="#" class="btn btn-danger btn-xs"><span class="fa fa-trash"></span></a>');
+            $prototype.find(".del-col").append($deleteLink);
+
+            $deleteLink.click(function (e) {
+                $(this).closest('.row-colonne').remove();
+                index = Math.max(0, index - 1);
+                e.preventDefault();
+            });
+        }
+
+        // Gérer le clic sur le bouton d'ajout
+        $('.add_line').click(function (e) {
+            const $this = $(this);
+            addLine($($this.attr('data-container')), $this.attr('data-protoname'), $this.attr('data-protoclass'));
+            e.preventDefault();
+        });
+    });
+</script>
+{% endblock %}

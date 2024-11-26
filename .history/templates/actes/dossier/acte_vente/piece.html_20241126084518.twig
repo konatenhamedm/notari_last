@@ -1,0 +1,107 @@
+{% block page_content %}
+
+{% form_theme form 'widget/fields-block.html.twig' %}
+{% from '_macros/piece.html.twig' import prototype_piece %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body form-card">
+                {{ form_start(form, {'attr': {'role': 'form', 'class': 'form', 'id': route_without_prefix}}) }}
+                {{ include('_includes/ajax/response.html.twig') }}
+                <h3 style="color: orangered">Vérification des pièces</h3>
+                <br>
+                <div class="panel panel-primary">
+                   <div class="row">
+                       <div class="col-md-12">
+                        <div class="tab-menu-heading">
+                            <div class="tabs-menu">
+                                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                    {% for identification in dossier %}
+                                    {% for attribut in identification.attribut %}
+                                     
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link {% if loop.first %}active{% endif %} show" id="{{ attribut.id }}-tab" data-bs-toggle="tab"
+                                            data-bs-target="#{{ attribut.id }}" role="tab" aria-controls="{{ attribut.id }}"
+                                            aria-selected="true">
+                                            {{ attribut.libelle }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                       </div>
+                   </div>
+                    <div class="panel-body tabs-menu-body">
+                        <div class="tab-content" id="myTabContent">
+                            {% for identification in dossier %}
+                            {% for attribut in identification.attribut %}
+                            {{<pre>
+                                {{ dump() }}
+                            </pre>}}
+                            <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="{{ attribut.id }}" role="tabpanel"
+                                aria-labelledby="{{ attribut.id }}-tab">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        {{ form_widget(attribut) }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="button" class="add-piece btn btn-sm btn-info" data-container=".{{ attribut.id }}-container">
+                                            Ajouter une pièce
+                                        </button>
+                                    </div>
+                                    <div class="col-md-4 {{ attribut.id }}-container">
+                                        {{ prototype_piece(form) }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </div
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="text-right">
+                            {{ form_widget(form.save) }}
+                            {% if form.next is defined %}
+                            {{ form_widget(form.next) }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    $(function () {
+        // Initialisation des sélecteurs et calculs après chargement de la page
+        init_select2(null, null, '.form-card');
+
+        // Gestion de l'ajout des lignes
+        $(document).on('click', '.add-piece', function () {
+            const $this = $(this);
+            const containerClass = $this.attr('data-container');
+            const $container = $(containerClass);
+            const $prototype = $container.find('[data-prototype]').data('prototype');
+            const index = $container.children().length;
+
+            // Ajout du prototype avec le bon index
+            const newElement = $prototype.replace(/__name__/g, index);
+            $container.append(newElement);
+
+            // Initialiser tout élément ajouté dynamiquement
+            init_select2($container.find('select'), null, '.form-card');
+        });
+    });
+</script>
+{% endblock %}

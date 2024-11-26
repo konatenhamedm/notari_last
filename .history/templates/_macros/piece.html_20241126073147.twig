@@ -1,0 +1,131 @@
+{% macro piece(colonne) %}
+
+<div class="panel panel-primary">
+    <div class="tab-menu-heading">
+        <div class="tabs-menu">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                {% for attributs in colunne.attribut %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="{{ attributs.id }}-tab" data-bs-toggle="tab"
+                            data-bs-target="#{{ attributs.id }}" type="button" role="tab"
+                            aria-controls="home" aria-selected="true">{{ attributs.libelle }}</button>
+                    </li>
+                    
+                {% endfor %}
+               
+            </ul>
+        </div>
+    </div>
+    <div class="panel-body tabs-menu-body">
+        <div class="tab-content" id="myTabContent">
+            {% for attributs in colunne.attribut %}
+                <div class="tab-pane fade" id="{{ attributs.id }}" role="tabpanel" aria-labelledby="{{ attributs.id }}-tab">
+                    <div class="row">
+                        <div class="col-md-6">{{ form_row(form[attributs.id]) }}</div>
+                    </div>
+                </div>  
+                <botton type="button" data-origine="1" class="add-piece btn btn-sm btn-info"
+                    data-container=".{{ attributs.id }}-container">Ajouter une/piece</botton>
+                <div class="{{ attributs.id }}-container">
+                    {% for piece in form.pieces|filter(v => v.vars.value.attribut == attributs.id) %}       
+
+                        
+                
+            {% endfor %}
+            <div class="tab-pane fade show active" id="acheteur" role="tabpanel" aria-labelledby="acheteur-tab">
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.montantAcheteur) }}</div>
+                </div>
+                <button type="button" data-origine="1" class="add-piece btn btn-sm btn-info"
+                    data-container=".acheteur-container">Ajouter une pièce</button>
+                <div class="row"></div>
+                <div class="acheteur-container">
+                    {% for piece in form.pieces|filter(v => v.vars.value.origine == 1) %}
+                    {{ list_piece(piece)}}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="tab-pane fade" id="vendeur" role="tabpanel" aria-labelledby="vendeur-tab">
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.montantVendeur) }}</div>
+                </div>
+                <button type="button" data-origine="2" class="add-piece btn btn-sm btn-info"
+                    data-container=".vendeur-container">Ajouter une pièce</button><br>
+                <div class="vendeur-container">
+                    {% for piece in form.pieces|filter(v => v.vars.value.origine == 2) %}
+                    {{ list_piece(piece)}}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<tr class="row-colonne even pointer table-light">
+    <td class="p-2">
+        <div style="display:no " class="field-matiere">{{ form_widget(colonne.type,{'attr':{'readOnly':'readOnly'}}) }}
+        </div>
+
+    </td>
+    <td class="p-2">
+        <div style="display:non" class="field-matiere">{{ form_widget(colonne.client,{'attr':{'readOnly':'readOnly'}})
+            }}</div>
+
+    </td>
+    <td class="p-2">
+        <div style="display:no " class="field-matiere">{{ form_widget(colonne.attribut,{'attr':{'readOnly':'readOnly'}})
+            }}</div>
+
+    </td>
+    <td class="p-2">
+        <div style="display:no " class="field-matiere">{{ form_widget(colonne.path) }}</div>
+
+    </td>
+    <td class="p-2 del-coldd "> {% if colonne.children.path.vars.data %}
+
+
+        <a class="btn btn-dark btn-sm" style="margin-top: 0px;" target="_blank"
+            href="{{ asset('uploads/media_entreprise/' ~ colonne.vars.value.path.alt) }} " download> <i
+                class="bi bi-upload"></i>
+        </a>
+        {% endif %}
+    </td>
+</tr>
+
+{% endmacro %}
+
+{% macro prototype_piece(form) %}
+<div class="list-colonne" data-prototype="{{ _self.piece(form.pieces.vars.prototype)|e }}">
+</div>
+
+
+<table class="table table-bordered table-custom">
+    <thead class="thead-dark">
+
+        <tr>
+            <th width="20%" class="p-2">Type</th>
+            <th width="30%" class="p-2">Client conserné</th>
+            <th width="20%" class="p-2">Attribut</th>
+            <th width="20%" class="p-2">DOc</th>
+
+
+
+
+            <th colspan="2" width="10%">
+                {# <button type="button" data-protoname="__name__" class="btn btn-default add_line btn-xs "
+                    id="add_ligne" data-protoclass=".list-colonne" data-container=".column-container">
+                    <i class="fa fa-plus"></i> Ajouter
+                </button> #}
+            </th>
+        </tr>
+    </thead>
+
+
+
+    <tbody class="column-container proto-container" data-childclass="">
+        {% for item in form.pieces %}
+        {{ _self.piece(item|e) }}
+        {% endfor %}
+    </tbody>
+
+</table>
+{% endmacro %}
