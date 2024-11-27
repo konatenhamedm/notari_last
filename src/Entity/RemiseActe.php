@@ -25,6 +25,9 @@ class RemiseActe
     #[ORM\JoinColumn(onDelete: "CASCADE")]
     private $dossier;
 
+    #[ORM\Column(length: 255)]
+    private ?string $commentaire = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -68,6 +71,18 @@ class RemiseActe
         $this->fichier = $fichier;
         /*  } */
 
+
+        return $this;
+    }
+
+    public function getCommentaire(): ?string
+    {
+        return $this->commentaire;
+    }
+
+    public function setCommentaire(string $commentaire): static
+    {
+        $this->commentaire = $commentaire;
 
         return $this;
     }
