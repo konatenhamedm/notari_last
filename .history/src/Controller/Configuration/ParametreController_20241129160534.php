@@ -116,11 +116,7 @@ class ParametreController extends BaseController
                     'id' => 'param_permission',
                     'href' => $this->generateUrl('app_utilisateur_permition_index')
                 ],
-                [
-                    'label' => 'Configuration application',
-                    'id' => 'param_p',
-                    'href' => $this->generateUrl('app_parametre_config_app_index')
-                ],
+                v
 
                 //encien menu le  nouveau
 
