@@ -13,10 +13,19 @@
                 <div class="row p-0">
                       <div class="col-md-10 p-0">
                             <div class="row" style="margin-left: 0px;">
-                                <div class="col-md-12">{{ form_row(form.nom) }}</div>
+                                <div class="col-md-6">{{ form_row(form.nom) }}</div>
+                                  <div class="col-md-6">{{ form_row(form.prenom) }}</div>
                             </div>
                             <div class="row" style="margin-left:0px;">
-                                <div class="col-md-12">{{ form_row(form.prenom) }}</div>
+                               <div class="col-md-4 ">
+                                {{ form_row(form.dateNaissance)}}
+                                </div>
+                                <div class="col-md-4 ">
+                                    {{ form_row(form.lieuNaissance)}}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_row(form.profession)}}
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-2 pr-3 text-end">
@@ -25,19 +34,6 @@
                       
 
                     </div>
-
-              
-                <div class="row">
-                    <div class="col-md-4 ">
-                        {{ form_row(form.dateNaissance)}}
-                    </div>
-                    <div class="col-md-4 ">
-                        {{ form_row(form.lieuNaissance)}}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.profession)}}
-                    </div>
-                </div>
 
                 <div class="row">
 
